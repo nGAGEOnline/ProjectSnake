@@ -18,7 +18,6 @@ public class SnakeGame
 
 	private int _score = 0;
 	private bool _gameOver;
-	private int _delay;
 
 	public SnakeGame(GameSettings settings, IRenderer renderer, IInput input)
 	{
@@ -43,20 +42,24 @@ public class SnakeGame
 
 	public void Init()
 	{
+		// Beginner & Easy difficulty allows player to not die when hitting the walls
+		// However, colliding with the snake still kills the player
+		CanDie = _settings.Difficulty != Difficulty.Beginner && _settings.Difficulty != Difficulty.Easy;
 		IsDebugMode = _settings.DebugMode;
-		_delay = GetDelayByDifficulty(_settings.Difficulty);
+
 		_renderer.Render(_board);
-		
+
 		AddNewFruit();
 		RenderScore(_score);
 	}
 
 	public async Task GameLoop()
 	{
+		var delay = _settings.GetDelayByDifficulty();
 		while (!_gameOver)
 		{
 			await Update();
-			await Task.Delay(_input.Direction is Direction.Left or Direction.Right ? _delay : (int)(_delay * 1.5f));
+			await Task.Delay(_input.Direction is Direction.Left or Direction.Right ? delay : (int)(delay * 1.5f));
 		}
 	}
 
@@ -67,49 +70,8 @@ public class SnakeGame
 		_renderer.Render(_snake);
 	}
 
-	private static int GetDelayByDifficulty(Difficulty difficulty)
-	{
-		// Beginner & Easy difficulty allows player to not die when hitting the walls
-		// However, colliding with the snake still kills the player
-		CanDie = difficulty != Difficulty.Beginner && difficulty != Difficulty.Easy;
-		
-		return difficulty switch
-		{
-			Difficulty.Beginner => 200,
-			Difficulty.Easy => 150,
-			Difficulty.Normal => 100,
-			Difficulty.Hard => 60,
-			Difficulty.Insane => 40,
-			_ => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
-		};
-	}
 	private void OnRemoveTail(Coord coord) 
 		=> _renderer.Clear(coord);
-
-	private void OnEatFruit()
-	{
-		RenderScore(IncreaseScore());
-		AddNewFruit();
-	}
-
-	private int IncreaseScore()
-	{
-		_score += _settings.Difficulty switch
-		{
-			Difficulty.Beginner => 1,
-			Difficulty.Easy => 2,
-			Difficulty.Normal => 3,
-			Difficulty.Hard => 4,
-			Difficulty.Insane => 5,
-			_ => 0
-		};
-		return _score;
-	}
-	private void AddNewFruit()
-	{
-		_board.AddFruit();
-		_renderer.RenderFruit(_board.Fruit);
-	}
 
 	private void OnDebugDataPositions(Coord head, Direction direction, Coord nextCoord)
 	{
@@ -131,6 +93,13 @@ public class SnakeGame
 		_renderer.RenderText(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2 + 2), text, MessageType.Restart);
 	}
 
+	private void OnEatFruit()
+	{
+		IncreaseScoreByDifficulty();
+		RenderScore(_score);
+		AddNewFruit();
+	}
+
 	private void RenderScore(int score)
 	{
 		var text = $"Score: {score}";
@@ -139,5 +108,26 @@ public class SnakeGame
 
 		_renderer.RenderText(new Coord(x, y), text, MessageType.Score);
 	}
-}
 
+	private void AddNewFruit()
+	{
+		_board.AddFruit();
+		_renderer.RenderFruit(_board.Fruit);
+	}
+
+	private void IncreaseScoreByDifficulty() 
+		=> _score += _settings.GetPointsByDifficulty();
+
+	private static int GetDelayByDifficulty(Difficulty difficulty)
+	{
+		return difficulty switch
+		{
+			Difficulty.Beginner => 200,
+			Difficulty.Easy => 150,
+			Difficulty.Normal => 100,
+			Difficulty.Hard => 60,
+			Difficulty.Insane => 40,
+			_ => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
+		};
+	}
+}
