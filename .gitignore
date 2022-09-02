@@ -4,6 +4,5 @@
 # Custom folders
 .idea/
 [Ll]ogs/
-[Bb]in/
-[Oo]bj/
-[Nn]et6.0/
+bin/
+obj/
