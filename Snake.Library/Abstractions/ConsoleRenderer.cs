@@ -42,7 +42,7 @@ public class ConsoleRenderer : IRenderer
 				    y == 0 || y == board.Height + 1)
 					Print(new Coord(x - 1, y - 1), BORDER_SYMBOL, DEFAULT_COLOR);
 			
-			if (SnakeGame.ShowDebugData && y > 0 && y <= board.Height)
+			if (SnakeGame.IsDebugMode && y > 0 && y <= board.Height)
 				Print(new Coord(board.Width + 8 - (y - 1).ToString().Length, y - 1), (y - 1).ToString(), DEFAULT_COLOR);
 		}
 	}

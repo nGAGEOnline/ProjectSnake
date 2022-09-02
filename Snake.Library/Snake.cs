@@ -48,9 +48,12 @@ public class Snake : ISnake
 
 		switch (NextGridValue(nextCoord))
 		{
-			case GridValue.Border or GridValue.Snake:
+			case GridValue.Border:
 				if (SnakeGame.CanDie)
 					Die?.Invoke();
+				break;
+			case GridValue.Snake:
+				Die?.Invoke();
 				break;
 			case GridValue.Empty:
 				Add(nextCoord);
@@ -61,7 +64,7 @@ public class Snake : ISnake
 				EatFruit?.Invoke();
 				break;
 		}
-		if (SnakeGame.ShowDebugData)
+		if (SnakeGame.IsDebugMode)
 			DebugDataPositions?.Invoke(Head, direction, nextCoord);
 	}
 

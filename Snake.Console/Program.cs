@@ -1,12 +1,14 @@
 ﻿using Snake.Library;
 using Snake.Library.Abstractions;
+using Snake.Library.Enums;
 
 while (true)
 {
 	var exit = false;
 	var input = new ConsoleInput();
 	var renderer = new ConsoleRenderer();
-	var snakeGame = new SnakeGame(input, renderer, 60, 25);
+	var gameSettings = new GameSettings(60, 25, Difficulty.Beginner);
+	var snakeGame = new SnakeGame(gameSettings, renderer, input);
 	snakeGame.Init();
 
 	await snakeGame.GameLoop();
