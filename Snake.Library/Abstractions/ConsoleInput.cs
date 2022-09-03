@@ -18,11 +18,11 @@ public class ConsoleInput : IInput
 
 	public void Listen()
 	{
-		if (_directionChanges.Count > 0)
-			Direction = _directionChanges.Dequeue();
-
 		var direction = GetDirectionFromInput();
 		ChangeDirection(direction);
+		
+		if (_directionChanges.Count > 0)
+			Direction = _directionChanges.Dequeue();
 	}
 
 	private Direction GetDirectionFromInput()
