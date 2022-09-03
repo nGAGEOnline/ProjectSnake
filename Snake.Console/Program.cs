@@ -5,7 +5,6 @@ using Snake.Library.Enums;
 // TODO: Consider adding simple sound (Windows only)
 // TODO: Add sound-playback to API for other platforms
 // TODO: Remove any Console.Writes from anything other than the renderer
-// TODO: Find a generic way to pass colors along with text/graphics
 while (true)
 {
 	// TODO: Add Start-Menu
@@ -17,7 +16,6 @@ while (true)
 	var renderer = new ConsoleRenderer();
 	var gameSettings = new GameSettings(60, 25, Difficulty.Beginner);
 	var snakeGame = new SnakeGame(gameSettings, renderer, input);
-	snakeGame.Init();
 
 	// TODO: Add short count-down before start 
 	// Game Loop

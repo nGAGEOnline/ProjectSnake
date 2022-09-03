@@ -4,11 +4,10 @@ namespace Snake.Library.Interfaces;
 
 public interface ISnake
 {
-	public IEnumerable<Coord> Coords { get; }
-	public Direction CurrentDirection { get; }
+	IEnumerable<Coord> Coords { get; }
 	
-	public Coord Head { get; }
-	public Coord Tail { get; }
+	Coord Head { get; }
+	Coord Tail { get; }
 
 	event Action<Coord, Direction, Coord> DebugDataPositions;
 	event Action<Coord> RemoveTail;

@@ -12,9 +12,9 @@ public enum MessageType
 }
 public class ConsoleRenderer : IRenderer
 {
-	#region CONSTS // ░▒▓█▲►▼◄֎●☻ꝏ◙◊■
+	#region CONSTS
 
-	private const char EMPTY = ' ';
+	private const char EMPTY_SYMBOL = ' ';
 	private const char BORDER_SYMBOL = '█';
 	private const char SNAKE_SYMBOL = '▒';
 	private const char SNAKE_HEAD_SYMBOL = '▓';
@@ -40,10 +40,10 @@ public class ConsoleRenderer : IRenderer
 			for (var x = 0; x < board.Width + 2; x++)
 				if (x == 0 || x == board.Width + 1 ||
 				    y == 0 || y == board.Height + 1)
-					Print(new Coord(x - 1, y - 1), BORDER_SYMBOL, DEFAULT_COLOR);
+					Print(new Coord(x - 1, y - 1), BORDER_SYMBOL);
 			
 			if (SnakeGame.IsDebugMode && y > 0 && y <= board.Height)
-				Print(new Coord(board.Width + 8 - (y - 1).ToString().Length, y - 1), (y - 1).ToString(), DEFAULT_COLOR);
+				Print(new Coord(board.Width + 8 - (y - 1).ToString().Length, y - 1), (y - 1).ToString());
 		}
 	}
 
@@ -57,9 +57,8 @@ public class ConsoleRenderer : IRenderer
 	public void RenderFruit(Coord coord) 
 		=> Print(coord, FRUIT_SYMBOL, FRUIT_COLOR);
 
-	
-	public void RenderText(Coord position, string text, MessageType messageType) 
-		=> Print(position, text, messageType switch{
+	public void RenderText(Coord coord, string text, MessageType messageType) 
+		=> Print(coord, text, messageType switch{
 			MessageType.Score => SCORE_COLOR,
 			MessageType.DebugPositions => POSITIONS_COLOR,
 			MessageType.PlayerDeath => PLAYER_DEATH_COLOR,
@@ -67,7 +66,9 @@ public class ConsoleRenderer : IRenderer
 			_ => throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null)
 		});
 
-	private static void Print(Coord coord, string text, ConsoleColor color)
+	private static void Print(Coord coord, char character, ConsoleColor color = DEFAULT_COLOR)
+		=> Print(coord, $"{character}", color);
+	private static void Print(Coord coord, string text, ConsoleColor color = DEFAULT_COLOR)
 	{
 		var currentColor = Console.ForegroundColor;
 		Console.ForegroundColor = color;
@@ -75,18 +76,7 @@ public class ConsoleRenderer : IRenderer
 		Console.Write(text);
 		Console.ForegroundColor = currentColor;
 	}
-	private static void Print(Coord coord, char symbol, ConsoleColor color)
-	{
-		var currentColor = Console.ForegroundColor;
-		Console.ForegroundColor = color;
-		Console.SetCursorPosition(coord.X + 1, coord.Y + 1);
-		Console.Write(symbol);
-		Console.ForegroundColor = currentColor;
-	}
 
 	public void Clear(Coord coord) 
-	{
-		Console.SetCursorPosition(coord.X + 1, coord.Y + 1);
-		Console.Write(' ');
-	}
+		=> Print(coord, EMPTY_SYMBOL);
 }

@@ -6,12 +6,11 @@ namespace Snake.Library.Abstractions;
 
 public class ConsoleInput : IInput
 {
-	// public event Action<Direction>? OnInput;
 	public Direction Direction { get; private set; }
 
 	public ConsoleInput()
 	{
-		//Direction = (Direction)SnakeGame.Rng.Next(1, Enum.GetValues<Direction>().Length);
+		// TODO: Consider moving the Direction-State out of the Input-class? (into Snake-class?)
 		Direction = Direction.Right;
 	}
 	private readonly Queue<Direction> _directionChanges = new();
@@ -60,5 +59,4 @@ public class ConsoleInput : IInput
 		=> _directionChanges.Count == 0
 			? Direction
 			: _directionChanges.Last();
-
 }

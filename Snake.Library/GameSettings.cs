@@ -22,11 +22,11 @@ public class GameSettings
 	{
 		return Difficulty switch
 		{
-			Difficulty.Beginner => 10,
-			Difficulty.Easy => 15,
+			Difficulty.Beginner => 5,
+			Difficulty.Easy => 10,
 			Difficulty.Normal => 20,
-			Difficulty.Hard => 25,
-			Difficulty.Insane => 30,
+			Difficulty.Hard => 30,
+			Difficulty.Insane => 50,
 			_ => 0
 		};
 	}

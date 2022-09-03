@@ -14,8 +14,6 @@ public class Snake : ISnake
 
 	public Coord Head => _coords.First.Value;
 	public Coord Tail => _coords.Last.Value;
-
-	public Direction CurrentDirection { get; private set; }
 	
 	private readonly LinkedList<Coord> _coords = new();
 	private readonly IBoard _board;
@@ -33,8 +31,6 @@ public class Snake : ISnake
 
 	public void Move(Direction direction)
 	{
-		CurrentDirection = direction;
-		
 		if (direction == Direction.None)
 			return;
 
@@ -64,6 +60,7 @@ public class Snake : ISnake
 				EatFruit?.Invoke();
 				break;
 		}
+		
 		if (SnakeGame.IsDebugMode)
 			DebugDataPositions?.Invoke(Head, direction, nextCoord);
 	}
