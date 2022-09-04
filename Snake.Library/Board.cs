@@ -9,9 +9,9 @@ public class Board : IBoard
 	public int Width { get; }
 	public int Height { get; }
 	public GridValue[,] Grid { get; }
-	public Coord Fruit { get; private set; }
+	public Coord FruitCoord { get; private set; }
 
-	public Board(int size)
+	public Board(int size = 20)
 		: this(size, size) { }
 
 	public Board(int width, int height)
@@ -27,8 +27,8 @@ public class Board : IBoard
 		if (emptyPositions.Count == 0)
 			return;
 
-		Fruit = emptyPositions[SnakeGame.Rng.Next(emptyPositions.Count)];
-		Grid[Fruit.X, Fruit.Y] = GridValue.Fruit;
+		FruitCoord = emptyPositions[SnakeGame.Rng.Next(emptyPositions.Count)];
+		Grid[FruitCoord.X, FruitCoord.Y] = GridValue.Fruit;
 	}
 
 	private IEnumerable<Coord> EmptyPositions()

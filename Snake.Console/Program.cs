@@ -2,9 +2,11 @@
 using Snake.Library.Abstractions;
 using Snake.Library.Enums;
 
+
 // TODO: Consider adding simple sound (Windows only)
 // TODO: Add sound-playback to API for other platforms
 // TODO: Remove any Console.Writes from anything other than the renderer
+// TODO: Add (at minimum) local leaderboard
 while (true)
 {
 	// TODO: Add Start-Menu
@@ -12,9 +14,9 @@ while (true)
 	// TODO: Add Settings-Menu for choosing difficulty
 	// TODO: -- Settings for customizing key-binds?
 	var exit = false;
-	var input = new ConsoleInput();
-	var renderer = new ConsoleRenderer();
-	var settings = new Settings(60, 25, Difficulty.Normal);
+	var input = new ConsoleInput(); // IInput
+	var renderer = new ConsoleRenderer(); // IRenderer
+	var settings = new Settings(80, 20, Difficulty.Insane);
 	var snakeGame = new SnakeGame(input, renderer, settings);
 
 	// Game Loop

@@ -1,5 +1,4 @@
-﻿using Snake.Library.Abstractions;
-using Snake.Library.Enums;
+﻿using Snake.Library.Enums;
 using Snake.Library.Interfaces;
 
 namespace Snake.Library;
@@ -54,7 +53,7 @@ public class SnakeGame
 		_renderer.Render(_board);
 
 		AddNewFruit();
-		RenderScore(_score);
+		UpdateScore(_score);
 	}
 
 	public async Task GameLoop()
@@ -62,33 +61,26 @@ public class SnakeGame
 		var delay = _settings.GetDelayByDifficulty();
 		while (!_gameOver)
 		{
-			await Update();
-			await Task.Delay(_input.Direction is Direction.Left or Direction.Right ? delay : (int)(delay * 1.5f));
+			await Update(delay);
 		}
 	}
 
-	private async Task Update()
+	private async Task Update(int delay)
 	{
 		_input.Listen();
 		_snake.Move(_input.Direction);
 		_renderer.Render(_snake);
+		
+		await Task.Delay(_input.Direction is Direction.Left or Direction.Right ? delay : (int)(delay * 1.5f));
 	}
 
 	private void OnRemoveTail(Coord coord) 
 		=> _renderer.Clear(coord);
 
-	private void OnDebugDataPositions(Coord head, Direction direction, Coord nextCoord)
-	{
-		var text = $"Head: [{head.X}, {head.Y}]\n" +
-		           $" Direction: {direction}\n" +
-		           $" Next Coord: [{nextCoord.X}, {nextCoord.Y}]";
-		_renderer.RenderText(new Coord(0, _board.Height + 4), text, MessageType.DebugPositions);
-	}
-
 	private void OnEatFruit()
 	{
 		IncreaseScoreByDifficulty();
-		RenderScore(_score);
+		UpdateScore(_score);
 		AddNewFruit();
 	}
 
@@ -106,7 +98,15 @@ public class SnakeGame
 		_renderer.RenderText(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2 + 2), text, MessageType.Restart);
 	}
 
-	private void RenderScore(int score)
+	private void OnDebugDataPositions(Coord head, Direction direction, Coord nextCoord)
+	{
+		var text = $"Head: [{head.X}, {head.Y}]\n" +
+		           $" Direction: {direction}\n" +
+		           $" Next Coord: [{nextCoord.X}, {nextCoord.Y}]";
+		_renderer.RenderText(new Coord(0, _board.Height + 4), text, MessageType.DebugPositions);
+	}
+
+	private void UpdateScore(int score)
 	{
 		var text = $"Score: {score}";
 		var x = _board.Width / 2 - text.Length / 2;
@@ -118,10 +118,9 @@ public class SnakeGame
 	private void AddNewFruit()
 	{
 		_board.AddFruit();
-		_renderer.RenderFruit(_board.Fruit);
+		_renderer.RenderFruit(_board.FruitCoord);
 	}
 
 	private void IncreaseScoreByDifficulty() 
 		=> _score += _settings.GetPointsByDifficulty();
-
 }

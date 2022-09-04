@@ -2,7 +2,7 @@
 
 namespace Snake.Library;
 
-public class Settings
+public readonly struct Settings
 {
 	public int Width { get; }
 	public int Height { get; }
@@ -18,29 +18,25 @@ public class Settings
 		Height = height;
 	}
 
-	public int GetPointsByDifficulty()
+	public int GetDelayByDifficulty() 
+		=> Difficulty switch
 	{
-		return Difficulty switch
-		{
-			Difficulty.Beginner => 5,
-			Difficulty.Easy => 10,
-			Difficulty.Normal => 20,
-			Difficulty.Hard => 30,
-			Difficulty.Insane => 50,
-			_ => 0
-		};
-	}
-	
-	public int GetDelayByDifficulty()
+		Difficulty.Beginner => 200,
+		Difficulty.Easy => 150,
+		Difficulty.Normal => 100,
+		Difficulty.Hard => 60,
+		Difficulty.Insane => 40,
+		_ => 500
+	};
+
+	public int GetPointsByDifficulty() 
+		=> Difficulty switch
 	{
-		return Difficulty switch
-		{
-			Difficulty.Beginner => 200,
-			Difficulty.Easy => 150,
-			Difficulty.Normal => 100,
-			Difficulty.Hard => 60,
-			Difficulty.Insane => 40,
-			_ => 500
-		};
-	}
+		Difficulty.Beginner => 5,
+		Difficulty.Easy => 10,
+		Difficulty.Normal => 20,
+		Difficulty.Hard => 30,
+		Difficulty.Insane => 50,
+		_ => 0
+	};
 }

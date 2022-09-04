@@ -1,6 +1,8 @@
-﻿namespace Snake.Library;
+﻿using Snake.Library.Interfaces;
 
-public readonly struct Coord
+namespace Snake.Library;
+
+public readonly struct Coord : IPosition
 {
 	#region STATICS
 	

@@ -6,7 +6,7 @@ public interface IBoard
 {
 	int Width { get; }
 	int Height { get; }
-	Coord Fruit { get; }
+	Coord FruitCoord { get; }
 	
 	GridValue[,] Grid { get; }
 
