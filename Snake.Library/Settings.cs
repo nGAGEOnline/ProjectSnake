@@ -2,7 +2,7 @@
 
 namespace Snake.Library;
 
-public class GameSettings
+public class Settings
 {
 	public int Width { get; }
 	public int Height { get; }
@@ -10,7 +10,7 @@ public class GameSettings
 	public Difficulty Difficulty { get; }
 	public bool DebugMode { get; }
 
-	public GameSettings(int width, int height, Difficulty difficulty, bool debugMode = false)
+	public Settings(int width, int height, Difficulty difficulty, bool debugMode = false)
 	{
 		Difficulty = difficulty;
 		DebugMode = debugMode;

@@ -14,11 +14,11 @@ while (true)
 	var exit = false;
 	var input = new ConsoleInput();
 	var renderer = new ConsoleRenderer();
-	var gameSettings = new GameSettings(60, 25, Difficulty.Beginner);
-	var snakeGame = new SnakeGame(gameSettings, renderer, input);
+	var settings = new Settings(60, 25, Difficulty.Normal);
+	var snakeGame = new SnakeGame(input, renderer, settings);
 
-	// TODO: Add short count-down before start 
 	// Game Loop
+	// TODO: Add short count-down before start 
 	await snakeGame.GameLoop();
 
 	// GameOver Screen

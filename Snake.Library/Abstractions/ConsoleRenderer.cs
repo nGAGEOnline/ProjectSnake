@@ -3,13 +3,6 @@ using Snake.Library.Interfaces;
 
 namespace Snake.Library.Abstractions;
 
-public enum MessageType
-{
-	Score,
-	DebugPositions,
-	PlayerDeath,
-	Restart
-}
 public class ConsoleRenderer : IRenderer
 {
 	#region CONSTS

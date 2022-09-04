@@ -14,12 +14,12 @@ public class SnakeGame
 	private readonly IBoard _board;
 	private readonly ISnake _snake;
 	private readonly IRenderer _renderer;
-	private readonly GameSettings _settings;
+	private readonly Settings _settings;
 
 	private int _score = 0;
 	private bool _gameOver;
 
-	public SnakeGame(GameSettings settings, IRenderer renderer, IInput input)
+	public SnakeGame(IInput input, IRenderer renderer, Settings settings)
 	{
 		_board = new Board(settings.Width, settings.Height);
 		_snake = new Snake(_board);
