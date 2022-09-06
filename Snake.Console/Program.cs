@@ -2,7 +2,6 @@
 using Snake.Library.Abstractions;
 using Snake.Library.Enums;
 
-
 // TODO: Consider adding simple sound (Windows only)
 // TODO: Add sound-playback to API for other platforms
 // TODO: Remove any Console.Writes from anything other than the renderer

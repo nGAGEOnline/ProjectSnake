@@ -5,5 +5,6 @@ public enum MessageType
 	Score,
 	DebugPositions,
 	PlayerDeath,
-	Restart
+	Restart,
+	Default
 }

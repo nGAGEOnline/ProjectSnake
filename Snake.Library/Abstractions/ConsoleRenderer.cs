@@ -42,9 +42,8 @@ public class ConsoleRenderer : IRenderer
 
 	public void Render(ISnake snake)
 	{
-		var points = snake.Coords.ToList();
-		for (var i = 0; i < points.Count; i++)
-			Print(points[i], i == 0 ? SNAKE_HEAD_SYMBOL : SNAKE_SYMBOL, SNAKE_COLOR);
+		for (var i = 0; i < 2; i++)
+			Print(snake.Coords.ElementAt(i), i == 0 ? SNAKE_HEAD_SYMBOL : SNAKE_SYMBOL, SNAKE_COLOR);
 	}
 
 	public void RenderFruit(Coord coord) 

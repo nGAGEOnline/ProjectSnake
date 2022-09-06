@@ -12,8 +12,9 @@ public class Snake : ISnake
 	public event Action<Coord>? RemoveTail;
 	public event Action<Coord, Direction, Coord> DebugDataPositions;
 
-	public Coord Head => _coords.First.Value;
-	public Coord Tail => _coords.Last.Value;
+	public Coord Head => _coords.ElementAt(0);
+	public Coord Body => _coords.ElementAt(1);
+	public Coord Tail => _coords.Last();
 	
 	private readonly LinkedList<Coord> _coords = new();
 	private readonly IBoard _board;
