@@ -1,6 +1,7 @@
-﻿using Snake.Library.Interfaces;
+﻿using Snake.Library;
+using Snake.Library.Interfaces;
 
-namespace Snake.Library.Abstractions;
+namespace Snake.Console.Abstractions;
 
 public class ConsoleFruit : IFruit
 {
@@ -22,6 +23,6 @@ public class ConsoleFruit : IFruit
 	}
 	public void Render()
 	{
-		Renderer.Render(this);
+		Renderer.RenderFruit(Coord);
 	}
 }

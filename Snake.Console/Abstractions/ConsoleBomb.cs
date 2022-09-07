@@ -1,7 +1,9 @@
-﻿using Snake.Library.Enums;
+﻿using Snake.Library;
+using Snake.Library.Abstractions;
+using Snake.Library.Enums;
 using Snake.Library.Interfaces;
 
-namespace Snake.Library.Abstractions;
+namespace Snake.Console.Abstractions;
 
 public class ConsoleBomb : IBomb
 {
@@ -9,11 +11,11 @@ public class ConsoleBomb : IBomb
 	private const char EMPTY_SYMBOL = ' ';
 	private const char BOMB_SYMBOL = '█';
 	private static readonly char[] BombExplosionSymbols = new char[]{ '█', '▓', '▒'};
+	private const int BLINK_TIME = 250;
 	#endregion
 	
 	public Coord Coord { get; }
 	public int DetonationTime { get; }
-	public int BlinkTime { get; } = 250;
 
 	private readonly Coord[] _explosionCoords;
 	private readonly IRenderer _renderer;
@@ -26,14 +28,7 @@ public class ConsoleBomb : IBomb
 		Coord = coord;
 		DetonationTime = detonationTime;
 		_timeRemaining = DetonationTime;
-		_explosionCoords = new[]
-		{
-			Coord + Coord.Up, Coord + Coord.Down, Coord + Coord.Left, Coord + Coord.Right,
-			// Coord + Coord.Up + Coord.Left, Coord + Coord.Up + Coord.Right,
-			// Coord + Coord.Down + Coord.Left, Coord + Coord.Down + Coord.Right
-		};
-		
-	//	Task.Run(Activate);
+		_explosionCoords = new[] { Coord + Coord.Up, Coord + Coord.Down, Coord + Coord.Left, Coord + Coord.Right };
 	}
 
 	public async Task Activate()
@@ -45,10 +40,10 @@ public class ConsoleBomb : IBomb
 	public async Task StartTimer()
 	{
 		while (_timeRemaining >= 3000)
-			await Blinking(BlinkTime * 3);
+			await Blinking(BLINK_TIME * 4);
 		
 		while (_timeRemaining >= 0)
-			await Blinking(BlinkTime);
+			await Blinking(BLINK_TIME);
 	}
 	private async Task Explosion()
 	{
@@ -83,6 +78,6 @@ public class ConsoleBomb : IBomb
 		_renderer.Render(Coord, $"{BOMB_SYMBOL}", _blinkOn ? MessageType.BombOn : MessageType.BombOff);
 		await Task.Delay(blinkTime);
 		_blinkOn = !_blinkOn;
-		_timeRemaining -= BlinkTime;
+		_timeRemaining -= BLINK_TIME;
 	}
 }

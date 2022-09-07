@@ -119,8 +119,7 @@ public class SnakeGame
 	private void AddNewFruit()
 	{
 		_board.SpawnFruit();
-		var fruit = new ConsoleFruit(_board.FruitCoord, _renderer);
-		fruit.Render();
+		_renderer.RenderFruit(_board.FruitCoord);
 	}
 
 	private void IncreaseScoreByDifficulty() 

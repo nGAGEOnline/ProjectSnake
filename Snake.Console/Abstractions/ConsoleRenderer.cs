@@ -1,7 +1,9 @@
-﻿using Snake.Library.Enums;
+﻿using Snake.Library;
+using Snake.Library.Enums;
 using Snake.Library.Interfaces;
+using static System.Console;
 
-namespace Snake.Library.Abstractions;
+namespace Snake.Console.Abstractions;
 
 public class ConsoleRenderer : IRenderer
 {
@@ -37,11 +39,11 @@ public class ConsoleRenderer : IRenderer
 	#endregion
 
 	public ConsoleRenderer() 
-		=> Console.CursorVisible = false;
+		=> CursorVisible = false;
 
 	public void Render(IBoard board)
 	{
-		Console.Clear();
+		System.Console.Clear();
 		for (var y = 0; y < board.Height + 2; y++)
 		{
 			for (var x = 0; x < board.Width + 2; x++)
@@ -83,11 +85,11 @@ public class ConsoleRenderer : IRenderer
 		=> Print(coord, $"{character}", color);
 	private static void Print(Coord coord, string text, ConsoleColor color = DEFAULT_COLOR)
 	{
-		var currentColor = Console.ForegroundColor;
-		Console.ForegroundColor = color;
-		Console.SetCursorPosition(coord.X + 1, coord.Y + 1);
-		Console.Write(text);
-		Console.ForegroundColor = currentColor;
+		var currentColor = ForegroundColor;
+		ForegroundColor = color;
+		SetCursorPosition(coord.X + 1, coord.Y + 1);
+		Write(text);
+		ForegroundColor = currentColor;
 	}
 
 	public void Clear(Coord coord) 

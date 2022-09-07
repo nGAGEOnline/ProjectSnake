@@ -1,8 +1,9 @@
 ﻿using Snake.Library.Enums;
 using Snake.Library.Helpers;
 using Snake.Library.Interfaces;
+using static System.Console;
 
-namespace Snake.Library.Abstractions;
+namespace Snake.Console.Abstractions;
 
 public class ConsoleInput : IInput
 {
@@ -26,10 +27,10 @@ public class ConsoleInput : IInput
 
 	private Direction GetDirectionFromInput()
 	{
-		if (!Console.KeyAvailable)
+		if (!KeyAvailable)
 			return Direction;
 				
-		return Console.ReadKey(true).Key switch
+		return ReadKey(true).Key switch
 		{
 			ConsoleKey.W or ConsoleKey.UpArrow => Direction.Up,
 			ConsoleKey.S or ConsoleKey.DownArrow => Direction.Down,
