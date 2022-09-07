@@ -2,18 +2,21 @@
 using Snake.Library;
 using Snake.Library.Abstractions;
 using Snake.Library.Enums;
+using Snake.Library.Interfaces;
 
 namespace Snake.Console;
 
 public class ConsoleGame
 {
-	private readonly int _width;
-	private readonly int _height;
+	private readonly IInput _input;
+	private readonly IRenderer _renderer;
+	private readonly Settings _settings;
 
-	public ConsoleGame(int width, int height)
+	public ConsoleGame(int width, int height, Difficulty difficulty, int startingLength = 5)
 	{
-		_width = width;
-		_height = height;
+		_input = new ConsoleInput(); // IInput
+		_renderer = new ConsoleRenderer(); // IRenderer
+		_settings = new Settings(width, height, difficulty, startingLength);
 	}
 	
 	public async Task Run()
@@ -30,10 +33,7 @@ public class ConsoleGame
 		while (true)
 		{
 			var exit = false;
-			var input = new ConsoleInput(); // IInput
-			var renderer = new ConsoleRenderer(); // IRenderer
-			var settings = new Settings(_width, _height, Difficulty.Hard);
-			var snakeGame = new SnakeGame(input, renderer, settings);
+			var snakeGame = new SnakeGame(_input, _renderer, _settings);
 
 			// Game Loop
 			// TODO: Add short count-down before start 

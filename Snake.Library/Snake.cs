@@ -10,7 +10,6 @@ public class Snake : ISnake
 	public event Action? EatFruit;
 	public event Action? Die;
 	public event Action<Coord>? RemoveTail;
-	public event Action<Coord, Direction, Coord> DebugDataPositions;
 
 	public Coord Head => _coords.ElementAt(0);
 	public Coord Body => _coords.ElementAt(1);
@@ -18,14 +17,13 @@ public class Snake : ISnake
 	
 	private readonly LinkedList<Coord> _coords = new();
 	private readonly IBoard _board;
-	private Coord _head;
 
 	public Snake(IBoard board, int startingLength = 3)
 	{
 		_board = board;
 
-		var x = SnakeGame.Rng.Next(board.Width / 2); // + board.Width / 4;
-		var y = SnakeGame.Rng.Next(board.Height / 2); // + board.Height / 4;
+		var x = SnakeGame.Rng.Next(board.Width / 2);
+		var y = SnakeGame.Rng.Next(board.Height / 2);
 		for (var i = 0; i < startingLength; i++)
 			Add(new Coord(x + i, y));
 	}
@@ -35,12 +33,13 @@ public class Snake : ISnake
 		if (direction == Direction.None)
 			return;
 
-		var nextCoord = _head + direction switch
+		var nextCoord = direction switch
 		{
-			Direction.Up => Coord.Up,
-			Direction.Down => Coord.Down,
-			Direction.Left => Coord.Left,
-			Direction.Right => Coord.Right,
+			Direction.Up => Head + Coord.Up,
+			Direction.Down => Head + Coord.Down,
+			Direction.Left => Head + Coord.Left,
+			Direction.Right => Head + Coord.Right,
+			_ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
 		};
 
 		switch (NextGridValue(nextCoord))
@@ -52,33 +51,35 @@ public class Snake : ISnake
 			case GridValue.Snake:
 				Die?.Invoke();
 				break;
-			case GridValue.Empty:
-				Add(nextCoord);
-				Remove();
+			case GridValue.Bomb:
+				// TODO: Decide if snake should eat bomb, or die
 				break;
 			case GridValue.Fruit:
 				Add(nextCoord);
 				EatFruit?.Invoke();
 				break;
+			case GridValue.Empty:
+				Add(nextCoord);
+				Remove();
+				break;
 		}
-		
-		if (SnakeGame.IsDebugMode)
-			DebugDataPositions?.Invoke(Head, direction, nextCoord);
 	}
 
 	private void Add(Coord coord)
 	{
-		_board.Grid[coord.X, coord.Y] = GridValue.Snake;
+		UpdateGrid(coord, GridValue.Snake);
 		_coords.AddFirst(coord);
-		_head = coord;
 	}
 
 	private void Remove()
 	{
-		_board.Grid[Tail.X, Tail.Y] = GridValue.Empty;
+		UpdateGrid(Tail, GridValue.Empty);
 		RemoveTail?.Invoke(Tail);
 		_coords.RemoveLast();
 	}
+	
+	private void UpdateGrid(Coord coord, GridValue gridValue)
+		=> _board.Grid[coord.X, coord.Y] = gridValue; 
 
 	private GridValue NextGridValue(Coord nextCoord)
 	{

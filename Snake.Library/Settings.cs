@@ -6,37 +6,37 @@ public readonly struct Settings
 {
 	public int Width { get; }
 	public int Height { get; }
+	public int StartingLength { get; }
 	
 	public Difficulty Difficulty { get; }
-	public bool DebugMode { get; }
 
-	public Settings(int width, int height, Difficulty difficulty, bool debugMode = false)
+	public Settings(int width, int height, Difficulty difficulty, int startingLength = 3)
 	{
-		Difficulty = difficulty;
-		DebugMode = debugMode;
 		Width = width;
 		Height = height;
+		Difficulty = difficulty;
+		StartingLength = startingLength;
 	}
+
+	public int GetPointsByDifficulty()
+		=> Difficulty switch
+		{
+			Difficulty.Beginner => 1,
+			Difficulty.Easy => 2,
+			Difficulty.Normal => 3,
+			Difficulty.Hard => 4,
+			Difficulty.Insane => 5,
+			_ => 0
+		};
 
 	public int GetDelayByDifficulty() 
 		=> Difficulty switch
-	{
-		Difficulty.Beginner => 200,
-		Difficulty.Easy => 150,
-		Difficulty.Normal => 100,
-		Difficulty.Hard => 60,
-		Difficulty.Insane => 40,
-		_ => 500
-	};
-
-	public int GetPointsByDifficulty() 
-		=> Difficulty switch
-	{
-		Difficulty.Beginner => 5,
-		Difficulty.Easy => 10,
-		Difficulty.Normal => 20,
-		Difficulty.Hard => 30,
-		Difficulty.Insane => 50,
-		_ => 0
-	};
+		{
+			Difficulty.Beginner => 200,
+			Difficulty.Easy => 150,
+			Difficulty.Normal => 100,
+			Difficulty.Hard => 60,
+			Difficulty.Insane => 40,
+			_ => 500
+		};
 }

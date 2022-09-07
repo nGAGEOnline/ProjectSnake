@@ -10,7 +10,6 @@ public interface ISnake
 	Coord Body { get; } // Just the 2nd element (old head on next frame)
 	Coord Tail { get; }
 
-	event Action<Coord, Direction, Coord> DebugDataPositions;
 	event Action<Coord> RemoveTail;
 	event Action EatFruit;
 	event Action Die;

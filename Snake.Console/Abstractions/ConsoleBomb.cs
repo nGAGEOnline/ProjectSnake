@@ -37,7 +37,7 @@ public class ConsoleBomb : IBomb
 		await Explosion();
 	}
 
-	public async Task StartTimer()
+	private async Task StartTimer()
 	{
 		while (_timeRemaining >= 3000)
 			await Blinking(BLINK_TIME * 4);
@@ -45,39 +45,40 @@ public class ConsoleBomb : IBomb
 		while (_timeRemaining >= 0)
 			await Blinking(BLINK_TIME);
 	}
+
+	private async Task Blinking(int blinkTime)
+	{
+		_renderer.Render(Coord, $"{BOMB_SYMBOL}", _blinkOn ? ColorType.BombOn : ColorType.BombOff);
+		await Task.Delay(blinkTime);
+		_blinkOn = !_blinkOn;
+		_timeRemaining -= BLINK_TIME;
+	}
+
 	private async Task Explosion()
 	{
 		var explosionIndex = 0;
 		const int animationDelay = 300;
 		foreach (var coord in _explosionCoords)
-			_renderer.Render(coord, $"{BombExplosionSymbols[explosionIndex]}", MessageType.Default);
-		_renderer.Render(Coord, $"{BOMB_SYMBOL}", MessageType.BombOn);
+			_renderer.Render(coord, $"{BombExplosionSymbols[explosionIndex]}", ColorType.Default);
+		_renderer.Render(Coord, $"{BOMB_SYMBOL}", ColorType.BombOn);
 
 		await Task.Delay(animationDelay);
 
 		explosionIndex++;
 		foreach (var coord in _explosionCoords)
-			_renderer.Render(coord, $"{BombExplosionSymbols[explosionIndex]}", MessageType.BombOn);
-		_renderer.Render(Coord, $"{BOMB_SYMBOL}", MessageType.PlayerDeath);
+			_renderer.Render(coord, $"{BombExplosionSymbols[explosionIndex]}", ColorType.BombOn);
+		_renderer.Render(Coord, $"{BOMB_SYMBOL}", ColorType.PlayerDeathText);
 
 		await Task.Delay(animationDelay);
 
 		explosionIndex++;
 		foreach (var coord in _explosionCoords)
-			_renderer.Render(coord, $"{BombExplosionSymbols[explosionIndex]}", MessageType.BombOff);
-		_renderer.Render(Coord, $"{EMPTY_SYMBOL}", MessageType.BombOff);
+			_renderer.Render(coord, $"{BombExplosionSymbols[explosionIndex]}", ColorType.BombOff);
+		_renderer.Render(Coord, $"{EMPTY_SYMBOL}", ColorType.BombOff);
 
 		await Task.Delay(animationDelay);
 
 		foreach (var coord in _explosionCoords)
-			_renderer.Render(coord, $"{EMPTY_SYMBOL}", MessageType.BombOff);
-	}
-
-	private async Task Blinking(int blinkTime)
-	{
-		_renderer.Render(Coord, $"{BOMB_SYMBOL}", _blinkOn ? MessageType.BombOn : MessageType.BombOff);
-		await Task.Delay(blinkTime);
-		_blinkOn = !_blinkOn;
-		_timeRemaining -= BLINK_TIME;
+			_renderer.Render(coord, $"{EMPTY_SYMBOL}", ColorType.BombOff);
 	}
 }
