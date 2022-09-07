@@ -14,15 +14,7 @@ public class ConsoleFruit : IFruit
 	#endregion
 
 	public Coord Coord { get; set; }
-	public IRenderer Renderer { get; }
 
-	public ConsoleFruit(Coord coord, IRenderer renderer)
-	{
-		Coord = coord;
-		Renderer = renderer;
-	}
-	public void Render()
-	{
-		Renderer.RenderFruit(Coord);
-	}
+	public ConsoleFruit(Coord coord) 
+		=> Coord = coord;
 }

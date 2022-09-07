@@ -22,7 +22,7 @@ public class Board : IBoard
 
 	public void SpawnFruit()
 	{
-		var emptyPositions = new List<Coord>(EmptyPositions());
+		var emptyPositions = EmptyPositions().ToList();
 		if (emptyPositions.Count == 0)
 			return;
 

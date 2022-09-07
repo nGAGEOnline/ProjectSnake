@@ -7,6 +7,7 @@ namespace Snake.Library;
 public class SnakeGame
 {
 	public static readonly Random Rng = new ();
+	
 	public static bool CanDie { get; private set; } = true;
 	public static bool IsDebugMode { get; private set; }
 
