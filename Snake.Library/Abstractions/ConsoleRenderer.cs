@@ -6,12 +6,24 @@ namespace Snake.Library.Abstractions;
 public class ConsoleRenderer : IRenderer
 {
 	#region CONSTS
-
+	// ═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬
+	// ─│┌┐└┘├┬┴┼
+	// ♦◊◌●☼
+	// █▓▒░
+	// ■□▪▫
+	// ▲►▼◄
 	private const char EMPTY_SYMBOL = ' ';
 	private const char BORDER_SYMBOL = '█';
 	private const char SNAKE_SYMBOL = '▒';
 	private const char SNAKE_HEAD_SYMBOL = '▓';
 	private const char FRUIT_SYMBOL = '■';
+	private const char BOMB_SYMBOL = '●';
+	private const char BOMB_EXPLODE_SYMBOL = '◌';
+	private const char BOMB_BLINK_TOP_SYMBOL = '▲';
+	private const char BOMB_BLINK_BOTTOM_SYMBOL = '▼';
+	private const char BOMB_BLINK_LEFT_SYMBOL = '◄';
+	private const char BOMB_BLINK_RIGHT_SYMBOL = '►';
+
 	private const ConsoleColor DEFAULT_COLOR = ConsoleColor.White;
 	private const ConsoleColor SNAKE_COLOR = ConsoleColor.Green;
 	private const ConsoleColor DEAD_SNAKE_COLOR = ConsoleColor.DarkGreen;
@@ -19,6 +31,8 @@ public class ConsoleRenderer : IRenderer
 	private const ConsoleColor SCORE_COLOR = ConsoleColor.Yellow;
 	private const ConsoleColor POSITIONS_COLOR = ConsoleColor.DarkCyan;
 	private const ConsoleColor PLAYER_DEATH_COLOR = ConsoleColor.DarkRed;
+	private const ConsoleColor BOMB_ON_COLOR = ConsoleColor.Yellow;
+	private const ConsoleColor BOMB_OFF_COLOR = ConsoleColor.DarkYellow;
 
 	#endregion
 
@@ -46,15 +60,22 @@ public class ConsoleRenderer : IRenderer
 			Print(snake.Coords.ElementAt(i), i == 0 ? SNAKE_HEAD_SYMBOL : SNAKE_SYMBOL, SNAKE_COLOR);
 	}
 
+	public void Render(IFruit fruit)
+		=> Print(fruit.Coord, FRUIT_SYMBOL, FRUIT_COLOR);
 	public void RenderFruit(Coord coord) 
 		=> Print(coord, FRUIT_SYMBOL, FRUIT_COLOR);
 
-	public void RenderText(Coord coord, string text, MessageType messageType) 
+	public void Render(Coord coord, string text, ConsoleColor color = DEFAULT_COLOR)
+		=> Print(coord, text, color);
+	public void Render(Coord coord, string text, MessageType messageType) 
 		=> Print(coord, text, messageType switch{
 			MessageType.Score => SCORE_COLOR,
 			MessageType.DebugPositions => POSITIONS_COLOR,
 			MessageType.PlayerDeath => PLAYER_DEATH_COLOR,
 			MessageType.Restart => DEFAULT_COLOR,
+			MessageType.BombOn => BOMB_ON_COLOR,
+			MessageType.BombOff => BOMB_OFF_COLOR,
+			MessageType.Default => DEFAULT_COLOR,
 			_ => throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null)
 		});
 

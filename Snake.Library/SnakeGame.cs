@@ -1,4 +1,5 @@
-﻿using Snake.Library.Enums;
+﻿using Snake.Library.Abstractions;
+using Snake.Library.Enums;
 using Snake.Library.Interfaces;
 
 namespace Snake.Library;
@@ -91,11 +92,11 @@ public class SnakeGame
 		
 		// TODO: Move render-code to a Display/Screen class
 		var text = "!!! THE SNAKE DIED !!!";
-		_renderer.RenderText(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2 - 2), text, MessageType.PlayerDeath);
+		_renderer.Render(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2 - 2), text, MessageType.PlayerDeath);
 		text = $"TOTAL SCORE: {_score}";
-		_renderer.RenderText(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2), text, MessageType.Score);
+		_renderer.Render(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2), text, MessageType.Score);
 		text = "Press SPACE To Restart or ESC to Exit";
-		_renderer.RenderText(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2 + 2), text, MessageType.Restart);
+		_renderer.Render(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2 + 2), text, MessageType.Restart);
 	}
 
 	private void OnDebugDataPositions(Coord head, Direction direction, Coord nextCoord)
@@ -103,7 +104,7 @@ public class SnakeGame
 		var text = $"Head: [{head.X}, {head.Y}]\n" +
 		           $" Direction: {direction}\n" +
 		           $" Next Coord: [{nextCoord.X}, {nextCoord.Y}]";
-		_renderer.RenderText(new Coord(0, _board.Height + 4), text, MessageType.DebugPositions);
+		_renderer.Render(new Coord(0, _board.Height + 4), text, MessageType.DebugPositions);
 	}
 
 	private void UpdateScore(int score)
@@ -112,13 +113,14 @@ public class SnakeGame
 		var x = _board.Width / 2 - text.Length / 2;
 		var y = _board.Height + 1;
 
-		_renderer.RenderText(new Coord(x, y), text, MessageType.Score);
+		_renderer.Render(new Coord(x, y), text, MessageType.Score);
 	}
 
 	private void AddNewFruit()
 	{
-		_board.AddFruit();
-		_renderer.RenderFruit(_board.FruitCoord);
+		_board.SpawnFruit();
+		var fruit = new ConsoleFruit(_board.FruitCoord, _renderer);
+		fruit.Render();
 	}
 
 	private void IncreaseScoreByDifficulty() 

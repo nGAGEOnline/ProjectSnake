@@ -13,7 +13,6 @@ public class Board : IBoard
 
 	public Board(int size = 20)
 		: this(size, size) { }
-
 	public Board(int width, int height)
 	{
 		Width = width;
@@ -21,7 +20,7 @@ public class Board : IBoard
 		Grid = new GridValue[Width, Height];
 	}
 
-	public void AddFruit()
+	public void SpawnFruit()
 	{
 		var emptyPositions = new List<Coord>(EmptyPositions());
 		if (emptyPositions.Count == 0)

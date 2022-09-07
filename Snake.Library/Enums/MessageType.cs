@@ -6,5 +6,7 @@ public enum MessageType
 	DebugPositions,
 	PlayerDeath,
 	Restart,
+	BombOn,
+	BombOff,
 	Default
 }

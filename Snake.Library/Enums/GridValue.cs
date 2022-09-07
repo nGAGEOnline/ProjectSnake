@@ -5,5 +5,6 @@ public enum GridValue
 	Empty,
 	Snake,
 	Fruit,
+	Bomb,
 	Border
 }

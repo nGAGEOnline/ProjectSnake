@@ -10,5 +10,5 @@ public interface IBoard
 	
 	GridValue[,] Grid { get; }
 
-	void AddFruit();
+	void SpawnFruit();
 }
