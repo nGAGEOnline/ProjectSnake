@@ -29,9 +29,11 @@ public class ConsoleBomb : IBomb
 		_explosionCoords = new[]
 		{
 			Coord + Coord.Up, Coord + Coord.Down, Coord + Coord.Left, Coord + Coord.Right,
-			Coord + Coord.Up + Coord.Left, Coord + Coord.Up + Coord.Right,
-			Coord + Coord.Down + Coord.Left, Coord + Coord.Down + Coord.Right
+			// Coord + Coord.Up + Coord.Left, Coord + Coord.Up + Coord.Right,
+			// Coord + Coord.Down + Coord.Left, Coord + Coord.Down + Coord.Right
 		};
+		
+	//	Task.Run(Activate);
 	}
 
 	public async Task Activate()
@@ -56,7 +58,6 @@ public class ConsoleBomb : IBomb
 			_renderer.Render(coord, $"{BombExplosionSymbols[explosionIndex]}", MessageType.Default);
 		_renderer.Render(Coord, $"{BOMB_SYMBOL}", MessageType.BombOn);
 
-		//Thread.Sleep(animationDelay);
 		await Task.Delay(animationDelay);
 
 		explosionIndex++;
@@ -64,7 +65,6 @@ public class ConsoleBomb : IBomb
 			_renderer.Render(coord, $"{BombExplosionSymbols[explosionIndex]}", MessageType.BombOn);
 		_renderer.Render(Coord, $"{BOMB_SYMBOL}", MessageType.PlayerDeath);
 
-		//Thread.Sleep(animationDelay);
 		await Task.Delay(animationDelay);
 
 		explosionIndex++;
@@ -72,7 +72,6 @@ public class ConsoleBomb : IBomb
 			_renderer.Render(coord, $"{BombExplosionSymbols[explosionIndex]}", MessageType.BombOff);
 		_renderer.Render(Coord, $"{EMPTY_SYMBOL}", MessageType.BombOff);
 
-		//Thread.Sleep(animationDelay);
 		await Task.Delay(animationDelay);
 
 		foreach (var coord in _explosionCoords)
@@ -81,10 +80,7 @@ public class ConsoleBomb : IBomb
 
 	private async Task Blinking(int blinkTime)
 	{
-		foreach (var coord in _explosionCoords)
-			_renderer.Render(coord, $"{BombExplosionSymbols.Last()}", MessageType.PlayerDeath);
-		_renderer.Render(Coord, $"{BOMB_SYMBOL}", _blinkOn ? MessageType.BombOn : MessageType.PlayerDeath);
-		//Thread.Sleep(blinkTime);
+		_renderer.Render(Coord, $"{BOMB_SYMBOL}", _blinkOn ? MessageType.BombOn : MessageType.BombOff);
 		await Task.Delay(blinkTime);
 		_blinkOn = !_blinkOn;
 		_timeRemaining -= BlinkTime;
