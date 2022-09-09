@@ -2,13 +2,18 @@
 
 namespace Snake.Library;
 
-public readonly struct Settings
+public struct Settings
 {
 	public int Width { get; }
 	public int Height { get; }
 	public int StartingLength { get; }
 	
 	public Difficulty Difficulty { get; }
+	public GridValue[,] Grid { get; set; }
+
+	public Settings(Settings settings) 
+		: this(settings.Width, settings.Height, settings.Difficulty, settings.StartingLength)
+		=> Grid = new GridValue[Width, Height];
 
 	public Settings(int width, int height, Difficulty difficulty, int startingLength = 3)
 	{
@@ -16,9 +21,10 @@ public readonly struct Settings
 		Height = height;
 		Difficulty = difficulty;
 		StartingLength = startingLength;
+		Grid = new GridValue[Width, Height];
 	}
 
-	public int GetPointsByDifficulty()
+	public readonly int GetPointsByDifficulty()
 		=> Difficulty switch
 		{
 			Difficulty.Beginner => 1,
@@ -29,7 +35,7 @@ public readonly struct Settings
 			_ => 0
 		};
 
-	public int GetDelayByDifficulty() 
+	public readonly int GetDelayByDifficulty() 
 		=> Difficulty switch
 		{
 			Difficulty.Beginner => 200,

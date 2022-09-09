@@ -16,15 +16,15 @@ public class Snake : ISnake
 	public Coord Tail => _coords.Last();
 	
 	private readonly LinkedList<Coord> _coords = new();
-	private readonly IBoard _board;
+	private readonly Settings _settings;
 
-	public Snake(IBoard board, int startingLength = 3)
+	public Snake(Settings settings)
 	{
-		_board = board;
+		_settings = settings;
 
-		var x = SnakeGame.Rng.Next(board.Width / 2);
-		var y = SnakeGame.Rng.Next(board.Height / 2);
-		for (var i = 0; i < startingLength; i++)
+		var x = SnakeGame.Rng.Next(_settings.Width / 2);
+		var y = SnakeGame.Rng.Next(_settings.Height / 2);
+		for (var i = 0; i < _settings.StartingLength; i++)
 			Add(new Coord(x + i, y));
 	}
 
@@ -79,7 +79,7 @@ public class Snake : ISnake
 	}
 	
 	private void UpdateGrid(Coord coord, GridValue gridValue)
-		=> _board.Grid[coord.X, coord.Y] = gridValue; 
+		=> _settings.Grid[coord.X, coord.Y] = gridValue; 
 
 	private GridValue NextGridValue(Coord nextCoord)
 	{
@@ -88,9 +88,9 @@ public class Snake : ISnake
 
 		return nextCoord == Tail
 			? GridValue.Empty 
-			: _board.Grid[nextCoord.X, nextCoord.Y];
+			: _settings.Grid[nextCoord.X, nextCoord.Y];
 	}
 
 	private bool IsOutsideGrid(Coord coord) 
-		=> coord.X < 0 || coord.X >= _board.Width || coord.Y < 0 || coord.Y >= _board.Height;
+		=> coord.X < 0 || coord.X >= _settings.Width || coord.Y < 0 || coord.Y >= _settings.Height;
 }

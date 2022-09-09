@@ -1,5 +1,4 @@
-﻿using Snake.Library.Abstractions;
-using Snake.Library.Enums;
+﻿using Snake.Library.Enums;
 using Snake.Library.Interfaces;
 
 namespace Snake.Library;
@@ -21,9 +20,9 @@ public class SnakeGame
 
 	public SnakeGame(IInput input, IRenderer renderer, Settings settings)
 	{
-		_board = new Board(settings.Width, settings.Height);
-		_snake = new Snake(_board, settings.StartingLength);
 		_settings = settings;
+		_board = new Board(_settings);
+		_snake = new Snake(_settings);
 		_input = input;
 		_renderer = renderer;
 		
@@ -89,22 +88,26 @@ public class SnakeGame
 		
 		// TODO: Move render-code to a Display/Screen class
 		var text = "!!! THE SNAKE DIED !!!";
-		_renderer.Render(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2 - 2), text, ColorType.PlayerDeathText);
+		_renderer.Render(new Coord(_settings.Width / 2 - text.Length / 2, _settings.Height / 2 - 2), text, ColorType.PlayerDeathText);
 		text = $"TOTAL SCORE: {_score}";
-		_renderer.Render(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2), text, ColorType.Score);
+		_renderer.Render(new Coord(_settings.Width / 2 - text.Length / 2, _settings.Height / 2), text, ColorType.Score);
 		text = "Press SPACE To Restart or ESC to Exit";
-		_renderer.Render(new Coord(_board.Width / 2 - text.Length / 2, _board.Height / 2 + 2), text, ColorType.RestartText);
+		_renderer.Render(new Coord(_settings.Width / 2 - text.Length / 2, _settings.Height / 2 + 2), text, ColorType.RestartText);
 	}
 
 	private void UpdateScore(int score)
 	{
 		var text = $"Score: {score}";
-		var x = _board.Width / 2 - text.Length / 2;
-		var y = _board.Height + 1;
+		var x = _settings.Width / 2 - text.Length / 2;
+		var y = _settings.Height + 1;
 
 		_renderer.Render(new Coord(x, y), text, ColorType.Score);
 	}
 
+	private void AddFruit(IFruit fruit)
+	{
+		
+	}
 	private void AddNewFruit()
 	{
 		_board.SpawnFruit();

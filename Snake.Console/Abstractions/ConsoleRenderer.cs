@@ -25,11 +25,11 @@ public class ConsoleRenderer : IRenderer
 
 	private const ConsoleColor DEFAULT_COLOR = ConsoleColor.White;
 	private const ConsoleColor SNAKE_COLOR = ConsoleColor.Green;
-	private const ConsoleColor DEAD_SNAKE_COLOR = ConsoleColor.DarkGreen;
+	private const ConsoleColor SNAKE_DEAD_COLOR = ConsoleColor.DarkGreen;
 	private const ConsoleColor FRUIT_COLOR = ConsoleColor.Red;
-	private const ConsoleColor SCORE_COLOR = ConsoleColor.Yellow;
-	private const ConsoleColor POSITIONS_COLOR = ConsoleColor.DarkCyan;
+	private const ConsoleColor SCORE_COLOR = ConsoleColor.DarkCyan;
 	private const ConsoleColor PLAYER_DEATH_COLOR = ConsoleColor.DarkRed;
+	private const ConsoleColor RESTART_TEXT_COLOR = ConsoleColor.Cyan;
 	private const ConsoleColor BOMB_ON_COLOR = ConsoleColor.Yellow;
 	private const ConsoleColor BOMB_OFF_COLOR = ConsoleColor.DarkYellow;
 
@@ -54,21 +54,15 @@ public class ConsoleRenderer : IRenderer
 			Print(snake.Coords.ElementAt(i), i == 0 ? SNAKE_HEAD_SYMBOL : SNAKE_SYMBOL, SNAKE_COLOR);
 	}
 
-	public void Render(IFruit fruit)
-		=> Print(fruit.Coord, FRUIT_SYMBOL, FRUIT_COLOR);
 	public void RenderFruit(Coord coord) 
 		=> Print(coord, FRUIT_SYMBOL, FRUIT_COLOR);
 
+	public void Render(Coord coord, RenderType renderType)
+	{
+		
+	}
 	public void Render(Coord coord, string text, ColorType colorType) 
-		=> Print(coord, text, colorType switch{
-			ColorType.Default => DEFAULT_COLOR,
-			ColorType.Score => SCORE_COLOR,
-			ColorType.BombOn => BOMB_ON_COLOR,
-			ColorType.BombOff => BOMB_OFF_COLOR,
-			ColorType.PlayerDeathText => PLAYER_DEATH_COLOR,
-			_ => throw new ArgumentOutOfRangeException(nameof(colorType), colorType, null)
-		});
-
+		=> Print(coord, text, GetColorByType(colorType));
 	private static void Print(Coord coord, char character, ConsoleColor color = DEFAULT_COLOR)
 		=> Print(coord, $"{character}", color);
 	private static void Print(Coord coord, string text, ConsoleColor color = DEFAULT_COLOR)
@@ -82,4 +76,20 @@ public class ConsoleRenderer : IRenderer
 
 	public void Clear(Coord coord) 
 		=> Print(coord, EMPTY_SYMBOL);
+
+	private static ConsoleColor GetColorByType(ColorType type)
+		=> type switch
+		{
+			ColorType.Default => DEFAULT_COLOR,
+			ColorType.Snake => SNAKE_COLOR,
+			ColorType.SnakeDead => SNAKE_DEAD_COLOR,
+			ColorType.Fruit => FRUIT_COLOR,
+			ColorType.BombOn => BOMB_ON_COLOR,
+			ColorType.BombOff => BOMB_OFF_COLOR,
+			ColorType.Score => SCORE_COLOR,
+			ColorType.Wall => DEFAULT_COLOR,
+			ColorType.PlayerDeathText => PLAYER_DEATH_COLOR,
+			ColorType.RestartText => RESTART_TEXT_COLOR,
+			_ => DEFAULT_COLOR
+		};
 }

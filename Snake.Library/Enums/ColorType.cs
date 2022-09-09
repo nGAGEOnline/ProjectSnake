@@ -3,9 +3,13 @@
 public enum ColorType
 {
 	Default,
-	Score,
+	Snake,
+	SnakeDead,
+	Fruit,
 	BombOn,
 	BombOff,
+	Score,
+	Wall,
 	PlayerDeathText,
 	RestartText
 }

@@ -1,4 +1,4 @@
-﻿namespace Snake.Library.Abstractions;
+﻿namespace Snake.Library.Interfaces;
 
 public interface IBomb
 {

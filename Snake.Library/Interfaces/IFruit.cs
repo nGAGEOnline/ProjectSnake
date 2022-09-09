@@ -2,5 +2,7 @@
 
 public interface IFruit
 {
-	Coord Coord { get; set; }
+	Coord Coord { get; }
+
+	void Render(IRenderer renderer);
 }
