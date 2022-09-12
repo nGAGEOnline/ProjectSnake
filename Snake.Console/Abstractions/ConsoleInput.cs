@@ -7,15 +7,12 @@ namespace Snake.Console.Abstractions;
 
 public class ConsoleInput : IInput
 {
-	public Direction Direction { get; private set; }
+	public Direction Direction { get; private set; } = Direction.Right;
 
-	public ConsoleInput()
-	{
-		// TODO: Consider moving the Direction-State out of the Input-class? (into Snake-class?)
-		Direction = Direction.Right;
-	}
 	private readonly Queue<Direction> _directionChanges = new();
 
+	public void Reset() 
+		=> Direction = Direction.Right;
 	public void Listen()
 	{
 		var direction = GetDirectionFromInput();

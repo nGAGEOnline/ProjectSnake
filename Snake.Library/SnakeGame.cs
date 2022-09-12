@@ -8,10 +8,12 @@ public class SnakeGame
 	public static readonly Random Rng = new ();
 	
 	public static bool CanDie { get; private set; } = true;
+	public static bool CanWrap { get; set; } = true;
+
+	private Snake _snake;
+	private Board _board;
 
 	private readonly IInput _input;
-	private readonly IBoard _board;
-	private readonly ISnake _snake;
 	private readonly IRenderer _renderer;
 	private readonly Settings _settings;
 
@@ -20,11 +22,11 @@ public class SnakeGame
 
 	public SnakeGame(IInput input, IRenderer renderer, Settings settings)
 	{
-		_settings = settings;
-		_board = new Board(_settings);
-		_snake = new Snake(_settings);
 		_input = input;
 		_renderer = renderer;
+		_settings = settings;
+		_board = new Board(_settings.Width, _settings.Height);
+		_snake = new Snake(_board);
 		
 		_snake.RemoveTail += OnRemoveTail;
 		_snake.EatFruit += OnEatFruit;
@@ -46,16 +48,22 @@ public class SnakeGame
 		// TODO: Consider adding move-speed acceleration on higher difficulty (upto a max speed)
 		// Beginner & Easy difficulty allows player to not die when hitting the walls, colliding with the snake still kills the player
 		CanDie = _settings.Difficulty != Difficulty.Beginner && _settings.Difficulty != Difficulty.Easy;
-
-		_renderer.Render(_board);
-
-		AddNewFruit();
-		UpdateScore(_score);
 	}
 
+	public void Reset()
+	{
+		_board = new Board(_settings.Width, _settings.Height);
+		_snake = new Snake(_board);
+		_input.Reset();
+	}
 	public async Task GameLoop()
 	{
 		var delay = _settings.GetDelayByDifficulty();
+		
+		_renderer.Render(_board);
+		AddNewFruit();
+		UpdateScore(_score);
+
 		while (!_gameOver)
 		{
 			await Update(delay);
@@ -104,10 +112,6 @@ public class SnakeGame
 		_renderer.Render(new Coord(x, y), text, ColorType.Score);
 	}
 
-	private void AddFruit(IFruit fruit)
-	{
-		
-	}
 	private void AddNewFruit()
 	{
 		_board.SpawnFruit();

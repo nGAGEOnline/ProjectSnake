@@ -2,7 +2,7 @@
 
 namespace Snake.Library;
 
-public readonly struct Coord : IPosition
+public readonly struct Coord
 {
 	#region STATICS
 	

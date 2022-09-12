@@ -9,7 +9,7 @@ public class ConsoleGame
 {
 	private IInput _input;
 	private IRenderer _renderer;
-	private Settings _settings;
+	private readonly Settings _settings;
 
 	public ConsoleGame(int width, int height, Difficulty difficulty, int startingLength = 5)
 	{
@@ -32,9 +32,8 @@ public class ConsoleGame
 		while (true)
 		{
 			var exit = false;
-			_input = new ConsoleInput(); // IInput
-			_renderer = new ConsoleRenderer(); // IRenderer
-			_settings = new Settings(_settings);
+			// _input = new ConsoleInput(); // IInput
+			// _renderer = new ConsoleRenderer(); // IRenderer
 			var snakeGame = new SnakeGame(_input, _renderer, _settings);
 
 			// Game Loop
@@ -48,6 +47,7 @@ public class ConsoleGame
 				switch (key)
 				{
 					case ConsoleKey.Spacebar:
+						snakeGame.Reset();
 						exit = true;
 						break;
 					case ConsoleKey.Escape:

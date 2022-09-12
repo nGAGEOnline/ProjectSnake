@@ -1,18 +1,17 @@
 ﻿using Snake.Library.Enums;
-using Snake.Library.Interfaces;
 
 namespace Snake.Library;
 
-public class Board : IBoard
+public class Board
 {
-	public int Width => _settings.Width;
-	public int Height => _settings.Height;
+	public int Width => Grid.GetLength(0);
+	public int Height => Grid.GetLength(1);
 	public Coord FruitCoord { get; private set; }
 	
-	private readonly Settings _settings;
+	public GridValue[,] Grid { get; }
 
-	public Board(Settings settings) 
-		=> _settings = settings;
+	public Board(int width, int height) 
+		=> Grid = new GridValue[width, height];
 
 	public void SpawnFruit()
 	{
@@ -21,14 +20,14 @@ public class Board : IBoard
 			return;
 
 		FruitCoord = emptyPositions[SnakeGame.Rng.Next(emptyPositions.Count)];
-		_settings.Grid[FruitCoord.X, FruitCoord.Y] = GridValue.Fruit;
+		Grid[FruitCoord.X, FruitCoord.Y] = GridValue.Fruit;
 	}
 
 	private IEnumerable<Coord> EmptyPositions()
 	{
 		for (var y = 0; y < Height; y++)
 			for (var x = 0; x < Width; x++)
-				if (_settings.Grid[x, y] == GridValue.Empty)
+				if (Grid[x, y] == GridValue.Empty)
 					yield return new Coord(x, y);
 	}
 }

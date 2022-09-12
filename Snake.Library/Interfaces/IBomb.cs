@@ -2,8 +2,10 @@
 
 public interface IBomb
 {
-	Coord Coord { get; }
+	Library.Coord Coord { get; }
 	int DetonationTime { get; }
 
+	event Action OnExplode;
+	
 	Task Activate();
 }

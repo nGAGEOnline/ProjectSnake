@@ -4,13 +4,13 @@ namespace Snake.Library.Interfaces;
 
 public interface ISnake
 {
-	IEnumerable<Coord> Coords { get; }
+	IEnumerable<Library.Coord> Coords { get; }
 	
-	Coord Head { get; }
-	Coord Body { get; } // Just the 2nd element (old head on next frame)
-	Coord Tail { get; }
+	Library.Coord Head { get; }
+	Library.Coord Body { get; } // Just the 2nd element (old head on next frame)
+	Library.Coord Tail { get; }
 
-	event Action<Coord> RemoveTail;
+	event Action<Library.Coord> RemoveTail;
 	event Action EatFruit;
 	event Action Die;
 

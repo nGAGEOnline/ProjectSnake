@@ -6,4 +6,5 @@ public interface IInput
 {
 	Direction Direction { get; }
 	void Listen();
+	void Reset();
 }

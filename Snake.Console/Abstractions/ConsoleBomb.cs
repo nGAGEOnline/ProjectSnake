@@ -7,13 +7,18 @@ namespace Snake.Console.Abstractions;
 public class ConsoleBomb : IBomb
 {
 	#region CONSTS
+	
 	private const char EMPTY_SYMBOL = ' ';
 	private const char BOMB_SYMBOL = '█';
 	private static readonly char[] BombExplosionSymbols = new char[]{ '█', '▓', '▒'};
 	private const int BLINK_TIME = 250;
-	#endregion
 	
+	#endregion
+
+	public event Action? OnExplode;
+
 	public Coord Coord { get; }
+
 	public int DetonationTime { get; }
 
 	private readonly Coord[] _explosionCoords;
@@ -21,7 +26,7 @@ public class ConsoleBomb : IBomb
 	private int _timeRemaining = 0;
 	private bool _blinkOn;
 
-	public ConsoleBomb(Coord coord, IRenderer renderer, int detonationTime = 10000)
+	public ConsoleBomb(Coord coord, IRenderer renderer, int detonationTime = 10000) 
 	{
 		_renderer = renderer;
 		Coord = coord;

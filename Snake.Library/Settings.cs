@@ -4,16 +4,11 @@ namespace Snake.Library;
 
 public struct Settings
 {
-	public int Width { get; }
-	public int Height { get; }
-	public int StartingLength { get; }
+	public int Width { get; private set; }
+	public int Height { get; private set; }
+	public int StartingLength { get; private set; }
 	
-	public Difficulty Difficulty { get; }
-	public GridValue[,] Grid { get; set; }
-
-	public Settings(Settings settings) 
-		: this(settings.Width, settings.Height, settings.Difficulty, settings.StartingLength)
-		=> Grid = new GridValue[Width, Height];
+	public Difficulty Difficulty { get; private set; }
 
 	public Settings(int width, int height, Difficulty difficulty, int startingLength = 3)
 	{
@@ -21,7 +16,6 @@ public struct Settings
 		Height = height;
 		Difficulty = difficulty;
 		StartingLength = startingLength;
-		Grid = new GridValue[Width, Height];
 	}
 
 	public readonly int GetPointsByDifficulty()

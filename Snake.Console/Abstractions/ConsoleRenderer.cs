@@ -27,6 +27,8 @@ public class ConsoleRenderer : IRenderer
 	private const ConsoleColor SNAKE_COLOR = ConsoleColor.Green;
 	private const ConsoleColor SNAKE_DEAD_COLOR = ConsoleColor.DarkGreen;
 	private const ConsoleColor FRUIT_COLOR = ConsoleColor.Red;
+	private const ConsoleColor BOMB_COLOR = ConsoleColor.Yellow;
+	private const ConsoleColor BORDER_COLOR = ConsoleColor.Gray;
 	private const ConsoleColor SCORE_COLOR = ConsoleColor.DarkCyan;
 	private const ConsoleColor PLAYER_DEATH_COLOR = ConsoleColor.DarkRed;
 	private const ConsoleColor RESTART_TEXT_COLOR = ConsoleColor.Cyan;
@@ -38,7 +40,7 @@ public class ConsoleRenderer : IRenderer
 	public ConsoleRenderer() 
 		=> CursorVisible = false;
 
-	public void Render(IBoard board)
+	public void Render(Board board)
 	{
 		System.Console.Clear();
 		for (var y = 0; y < board.Height + 2; y++)
@@ -48,7 +50,7 @@ public class ConsoleRenderer : IRenderer
 					Print(new Coord(x - 1, y - 1), BORDER_SYMBOL);
 	}
 
-	public void Render(ISnake snake)
+	public void Render(Library.Snake snake)
 	{
 		for (var i = 0; i < 2; i++)
 			Print(snake.Coords.ElementAt(i), i == 0 ? SNAKE_HEAD_SYMBOL : SNAKE_SYMBOL, SNAKE_COLOR);
@@ -59,8 +61,18 @@ public class ConsoleRenderer : IRenderer
 
 	public void Render(Coord coord, RenderType renderType)
 	{
-		
+		switch (renderType)
+		{
+			case RenderType.SnakeHead: Print(coord, SNAKE_HEAD_SYMBOL, SNAKE_COLOR); break;
+			case RenderType.SnakeBody: Print(coord, SNAKE_SYMBOL, SNAKE_COLOR); break;
+			case RenderType.Fruit: Print(coord, FRUIT_SYMBOL, FRUIT_COLOR); break;
+			case RenderType.Bomb: Print(coord, BOMB_SYMBOL, BOMB_COLOR); break;
+			case RenderType.Border: Print(coord, BORDER_SYMBOL, BORDER_COLOR); break;
+			case RenderType.Empty: Print(coord, ' ', DEFAULT_COLOR); break;
+			default: Print(coord, '?', DEFAULT_COLOR); break;
+		};
 	}
+
 	public void Render(Coord coord, string text, ColorType colorType) 
 		=> Print(coord, text, GetColorByType(colorType));
 	private static void Print(Coord coord, char character, ConsoleColor color = DEFAULT_COLOR)

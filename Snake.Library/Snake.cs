@@ -3,7 +3,7 @@ using Snake.Library.Interfaces;
 
 namespace Snake.Library;
 
-public class Snake : ISnake
+public class Snake
 {
 	public IEnumerable<Coord> Coords => _coords;
 
@@ -16,15 +16,19 @@ public class Snake : ISnake
 	public Coord Tail => _coords.Last();
 	
 	private readonly LinkedList<Coord> _coords = new();
-	private readonly Settings _settings;
+	private readonly Board _board;
 
-	public Snake(Settings settings)
+	public Snake(Board board, int startingLength = 5)
 	{
-		_settings = settings;
+		_board = board;
 
-		var x = SnakeGame.Rng.Next(_settings.Width / 2);
-		var y = SnakeGame.Rng.Next(_settings.Height / 2);
-		for (var i = 0; i < _settings.StartingLength; i++)
+		// Temporary random starting position in the center of the screen
+		var aThirdWidth = _board.Width / 3;
+		var aThirdHeight = _board.Height / 3;
+		var x = SnakeGame.Rng.Next(aThirdWidth) + aThirdWidth - startingLength;
+		var y = SnakeGame.Rng.Next(aThirdHeight) + aThirdHeight;
+		
+		for (var i = 0; i < startingLength; i++)
 			Add(new Coord(x + i, y));
 	}
 
@@ -33,15 +37,24 @@ public class Snake : ISnake
 		if (direction == Direction.None)
 			return;
 
-		var nextCoord = direction switch
+		var nextCoord = Head + direction switch
 		{
-			Direction.Up => Head + Coord.Up,
-			Direction.Down => Head + Coord.Down,
-			Direction.Left => Head + Coord.Left,
-			Direction.Right => Head + Coord.Right,
+			Direction.Up => Coord.Up,
+			Direction.Down => Coord.Down,
+			Direction.Left => Coord.Left,
+			Direction.Right => Coord.Right,
 			_ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
 		};
 
+		if (SnakeGame.CanWrap)
+			nextCoord = direction switch
+			{
+				Direction.Up => new Coord(nextCoord.X, (nextCoord.Y % _board.Height + _board.Height) % _board.Height),
+				Direction.Down => new Coord(nextCoord.X, nextCoord.Y % _board.Height),
+				Direction.Left => new Coord((nextCoord.X % _board.Width + _board.Width) % _board.Width, nextCoord.Y),
+				Direction.Right => new Coord(nextCoord.X % _board.Width, nextCoord.Y),
+			};
+		
 		switch (NextGridValue(nextCoord))
 		{
 			case GridValue.Border:
@@ -79,18 +92,18 @@ public class Snake : ISnake
 	}
 	
 	private void UpdateGrid(Coord coord, GridValue gridValue)
-		=> _settings.Grid[coord.X, coord.Y] = gridValue; 
+		=> _board.Grid[coord.X, coord.Y] = gridValue; 
 
 	private GridValue NextGridValue(Coord nextCoord)
 	{
-		if (IsOutsideGrid(nextCoord))
+		if (!SnakeGame.CanWrap && IsOutsideGrid(nextCoord))
 			return GridValue.Border;
 
 		return nextCoord == Tail
 			? GridValue.Empty 
-			: _settings.Grid[nextCoord.X, nextCoord.Y];
+			: _board.Grid[nextCoord.X, nextCoord.Y];
 	}
 
 	private bool IsOutsideGrid(Coord coord) 
-		=> coord.X < 0 || coord.X >= _settings.Width || coord.Y < 0 || coord.Y >= _settings.Height;
+		=> coord.X < 0 || coord.X >= _board.Width || coord.Y < 0 || coord.Y >= _board.Height;
 }
