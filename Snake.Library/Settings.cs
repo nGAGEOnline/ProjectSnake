@@ -7,15 +7,17 @@ public struct Settings
 	public int Width { get; private set; }
 	public int Height { get; private set; }
 	public int StartingLength { get; private set; }
+	public bool CanWrap { get; set; }
 	
 	public Difficulty Difficulty { get; private set; }
 
-	public Settings(int width, int height, Difficulty difficulty, int startingLength = 3)
+	public Settings(int width, int height, Difficulty difficulty, int startingLength = 3, bool canWrap = false)
 	{
 		Width = width;
 		Height = height;
 		Difficulty = difficulty;
 		StartingLength = startingLength;
+		CanWrap = canWrap;
 	}
 
 	public readonly int GetPointsByDifficulty()

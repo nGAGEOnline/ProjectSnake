@@ -48,6 +48,7 @@ public class SnakeGame
 		// TODO: Consider adding move-speed acceleration on higher difficulty (upto a max speed)
 		// Beginner & Easy difficulty allows player to not die when hitting the walls, colliding with the snake still kills the player
 		CanDie = _settings.Difficulty != Difficulty.Beginner && _settings.Difficulty != Difficulty.Easy;
+		CanWrap = _settings.CanWrap;
 	}
 
 	public void Reset()
