@@ -1,21 +1,20 @@
 ﻿using Snake.Console.Abstractions;
 using Snake.Library;
-using Snake.Library.Enums;
 using Snake.Library.Interfaces;
 
 namespace Snake.Console;
 
 public class ConsoleGame
 {
-	private IInput _input;
-	private IRenderer _renderer;
+	private readonly IInput _input;
+	private readonly IRenderer _renderer;
 	private readonly Settings _settings;
 
-	public ConsoleGame(int width, int height, Difficulty difficulty, int startingLength = 5)
+	public ConsoleGame(Settings settings)
 	{
 		_input = new ConsoleInput(); // IInput
 		_renderer = new ConsoleRenderer(); // IRenderer
-		_settings = new Settings(width, height, difficulty, startingLength);
+		_settings = settings;
 	}
 	
 	public async Task Run()

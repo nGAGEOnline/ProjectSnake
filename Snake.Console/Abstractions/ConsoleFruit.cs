@@ -4,7 +4,7 @@ using Snake.Library.Interfaces;
 
 namespace Snake.Console.Abstractions;
 
-public class ConsoleFruit : IFruit
+public class ConsoleFruit
 {
 	#region CONSTS
 
@@ -13,11 +13,9 @@ public class ConsoleFruit : IFruit
 
 	#endregion
 	
-	public Coord Coord  { get; }
+	public void Render(IRenderer renderer, IFruit fruit)
+	{
+		renderer.Render(fruit.Coord, $"{fruit.FruitSymbol}", fruit.ColorType);
+	}
 
-	public ConsoleFruit(Coord coord)
-		=> Coord = coord;
-
-	public void Render(IRenderer renderer) 
-		=> renderer.Render(Coord, RenderType.Fruit);
 }

@@ -7,8 +7,8 @@ public class SnakeGame
 {
 	public static readonly Random Rng = new ();
 	
-	public static bool CanDie { get; private set; } = true;
-	public static bool CanWrap { get; set; } = true;
+	public static bool CanDie { get; private set; }
+	public static bool CanWrap { get; private set; }
 
 	private Snake _snake;
 	private Board _board;
@@ -32,23 +32,15 @@ public class SnakeGame
 		_snake.EatFruit += OnEatFruit;
 		_snake.Die += OnDie;
 
-		Init();
+		// Beginner & Easy difficulty allows player to not die when hitting the walls, colliding with the snake still kills the player
+		CanDie = _settings.Difficulty != Difficulty.Beginner && _settings.Difficulty != Difficulty.Easy;
+		CanWrap = _settings.CanWrap;
 	}
 	~SnakeGame()
 	{
 		_snake.RemoveTail -= OnRemoveTail;
 		_snake.EatFruit -= OnEatFruit;
 		_snake.Die -= OnDie;
-	}
-
-	private void Init()
-	{
-		// TODO: Add random, timed bombs (5sec timer) for Insane difficulty
-		// TODO: Consider adding Nightmare difficulty
-		// TODO: Consider adding move-speed acceleration on higher difficulty (upto a max speed)
-		// Beginner & Easy difficulty allows player to not die when hitting the walls, colliding with the snake still kills the player
-		CanDie = _settings.Difficulty != Difficulty.Beginner && _settings.Difficulty != Difficulty.Easy;
-		CanWrap = _settings.CanWrap;
 	}
 
 	public void Reset()

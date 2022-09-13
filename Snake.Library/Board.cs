@@ -1,4 +1,5 @@
 ﻿using Snake.Library.Enums;
+using Snake.Library.Interfaces;
 
 namespace Snake.Library;
 

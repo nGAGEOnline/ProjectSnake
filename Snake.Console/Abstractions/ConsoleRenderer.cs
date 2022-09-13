@@ -56,6 +56,9 @@ public class ConsoleRenderer : IRenderer
 			Print(snake.Coords.ElementAt(i), i == 0 ? SNAKE_HEAD_SYMBOL : SNAKE_SYMBOL, SNAKE_COLOR);
 	}
 
+	public void Render(IFruit fruit) 
+		=> new ConsoleFruit().Render(this, fruit);
+
 	public void RenderFruit(Coord coord) 
 		=> Print(coord, FRUIT_SYMBOL, FRUIT_COLOR);
 
@@ -75,9 +78,9 @@ public class ConsoleRenderer : IRenderer
 
 	public void Render(Coord coord, string text, ColorType colorType) 
 		=> Print(coord, text, GetColorByType(colorType));
-	private static void Print(Coord coord, char character, ConsoleColor color = DEFAULT_COLOR)
+	protected static void Print(Coord coord, char character, ConsoleColor color = DEFAULT_COLOR)
 		=> Print(coord, $"{character}", color);
-	private static void Print(Coord coord, string text, ConsoleColor color = DEFAULT_COLOR)
+	protected static void Print(Coord coord, string text, ConsoleColor color = DEFAULT_COLOR)
 	{
 		var currentColor = ForegroundColor;
 		ForegroundColor = color;

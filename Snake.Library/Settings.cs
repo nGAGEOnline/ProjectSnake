@@ -28,6 +28,7 @@ public struct Settings
 			Difficulty.Normal => 3,
 			Difficulty.Hard => 4,
 			Difficulty.Insane => 5,
+			Difficulty.Nightmare => 6,
 			_ => 0
 		};
 
@@ -36,9 +37,10 @@ public struct Settings
 		{
 			Difficulty.Beginner => 200,
 			Difficulty.Easy => 150,
-			Difficulty.Normal => 100,
-			Difficulty.Hard => 60,
-			Difficulty.Insane => 40,
-			_ => 500
+			Difficulty.Normal => 110,
+			Difficulty.Hard => 80,
+			Difficulty.Insane => 60,
+			Difficulty.Nightmare => 40,
+			_ => 300
 		};
 }
