@@ -2,14 +2,16 @@
 
 public enum ColorType
 {
-	Default,
-	Snake,
-	SnakeDead,
-	Fruit,
-	BombOn,
-	BombOff,
-	Score,
-	Wall,
-	PlayerDeathText,
-	RestartText
+	Black,
+	White,
+	Grey,
+	Red,
+	Cyan,
+	Green,
+	Yellow,
+	DarkRed,
+	DarkCyan,
+	DarkGreen,
+	DarkYellow,
+	DarkGrey
 }

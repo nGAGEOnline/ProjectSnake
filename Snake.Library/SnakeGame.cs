@@ -1,4 +1,5 @@
-﻿using Snake.Library.Enums;
+﻿using Microsoft.VisualBasic.FileIO;
+using Snake.Library.Enums;
 using Snake.Library.Interfaces;
 
 namespace Snake.Library;
@@ -10,12 +11,15 @@ public class SnakeGame
 	public static bool CanDie { get; private set; }
 	public static bool CanWrap { get; private set; }
 
-	private Snake _snake;
 	private Board _board;
-
+	private ISnake _snake;
+	
 	private readonly IInput _input;
 	private readonly IRenderer _renderer;
 	private readonly Settings _settings;
+
+	private readonly TextPrinter _scoreText;
+	private readonly TextPrinter _titleText;
 
 	private int _score = 0;
 	private bool _gameOver;
@@ -28,6 +32,9 @@ public class SnakeGame
 		_board = new Board(_settings.Width, _settings.Height);
 		_snake = new Snake(_board);
 		
+		_titleText = new TextPrinter(_board, new TextField("SnakeGame by nGAGEOnline", ColorType.Green, ColorType.Black), -2);
+		_scoreText = new TextPrinter(_board, new TextField($"Score: {_score}", ColorType.DarkGrey, ColorType.Black), _settings.Height);
+
 		_snake.RemoveTail += OnRemoveTail;
 		_snake.EatFruit += OnEatFruit;
 		_snake.Die += OnDie;
@@ -42,20 +49,22 @@ public class SnakeGame
 		_snake.EatFruit -= OnEatFruit;
 		_snake.Die -= OnDie;
 	}
-
+	
 	public void Reset()
 	{
 		_board = new Board(_settings.Width, _settings.Height);
 		_snake = new Snake(_board);
 		_input.Reset();
+		_score = 0;
 	}
 	public async Task GameLoop()
 	{
 		var delay = _settings.GetDelayByDifficulty();
-		
 		_renderer.Render(_board);
+		_scoreText.Render(_renderer);
+		_titleText.Render(_renderer);
 		AddNewFruit();
-		UpdateScore(_score);
+		BombSpawner();
 
 		while (!_gameOver)
 		{
@@ -69,16 +78,26 @@ public class SnakeGame
 		_snake.Move(_input.Direction);
 		_renderer.Render(_snake);
 		
-		await Task.Delay(_input.Direction is Direction.Left or Direction.Right ? delay : (int)(delay * 1.5f));
+		await Task.Delay(_input.Direction is Direction.Left or Direction.Right ? delay : (int)(delay * 1.6f));
 	}
 
+	private async Task BombSpawner()
+	{
+		while (!_gameOver)
+		{
+			await Task.Delay(10000);
+			_board.SpawnBomb(_renderer);
+			await Task.Delay(10000);
+		}
+	}
 	private void OnRemoveTail(Coord coord) 
 		=> _renderer.Clear(coord);
 
 	private void OnEatFruit()
 	{
 		IncreaseScoreByDifficulty();
-		UpdateScore(_score);
+		_scoreText.Update($"Score: {_score}");
+		_scoreText.Render(_renderer);
 		AddNewFruit();
 	}
 
@@ -88,27 +107,20 @@ public class SnakeGame
 		_gameOver = true;
 		
 		// TODO: Move render-code to a Display/Screen class
-		var text = "!!! THE SNAKE DIED !!!";
-		_renderer.Render(new Coord(_settings.Width / 2 - text.Length / 2, _settings.Height / 2 - 2), text, ColorType.PlayerDeathText);
-		text = $"TOTAL SCORE: {_score}";
-		_renderer.Render(new Coord(_settings.Width / 2 - text.Length / 2, _settings.Height / 2), text, ColorType.Score);
-		text = "Press SPACE To Restart or ESC to Exit";
-		_renderer.Render(new Coord(_settings.Width / 2 - text.Length / 2, _settings.Height / 2 + 2), text, ColorType.RestartText);
-	}
-
-	private void UpdateScore(int score)
-	{
-		var text = $"Score: {score}";
-		var x = _settings.Width / 2 - text.Length / 2;
-		var y = _settings.Height + 1;
-
-		_renderer.Render(new Coord(x, y), text, ColorType.Score);
+		var text = new TextPrinter[]
+		{
+			new TextPrinter(_board, new TextField("!!! THE SNAKE DIED !!!", ColorType.White, ColorType.DarkRed), _settings.Height / 2 - 2),
+			new TextPrinter(_board, new TextField($"TOTAL SCORE: {_score}", ColorType.DarkCyan, ColorType.Black), _settings.Height / 2),
+			new TextPrinter(_board, new TextField("Press SPACE To Restart or ESC to Exit", ColorType.Cyan, ColorType.Black), _settings.Height / 2 + 2),
+		};
+		foreach (var line in text)
+			line.Render(_renderer);
 	}
 
 	private void AddNewFruit()
 	{
 		_board.SpawnFruit();
-		_renderer.RenderFruit(_board.FruitCoord);
+		_renderer.Render(_board.Fruit);
 	}
 
 	private void IncreaseScoreByDifficulty() 

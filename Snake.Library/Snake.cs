@@ -3,7 +3,7 @@ using Snake.Library.Interfaces;
 
 namespace Snake.Library;
 
-public class Snake
+public class Snake : ISnake
 {
 	public IEnumerable<Coord> Coords => _coords;
 

@@ -7,12 +7,14 @@ namespace Snake.Console.Abstractions;
 
 public class ConsoleInput : IInput
 {
+	public int BufferSize { get; }
 	public Direction Direction { get; private set; } = Direction.Right;
 
 	private readonly Queue<Direction> _directionChanges = new();
 
-	public void Reset() 
-		=> Direction = Direction.Right;
+	public ConsoleInput(int bufferSize = 2) 
+		=> BufferSize = bufferSize;
+
 	public void Listen()
 	{
 		var direction = GetDirectionFromInput();
@@ -21,6 +23,9 @@ public class ConsoleInput : IInput
 		if (_directionChanges.Count > 0)
 			Direction = _directionChanges.Dequeue();
 	}
+
+	public void Reset() 
+		=> Direction = Direction.Right;
 
 	private Direction GetDirectionFromInput()
 	{
@@ -46,7 +51,7 @@ public class ConsoleInput : IInput
 
 	private bool CanChangeDirection(Direction newDirection)
 	{
-		if (_directionChanges.Count == 1)
+		if (_directionChanges.Count == BufferSize)
 			return false;
 
 		var lastDirection = GetLastDirection();

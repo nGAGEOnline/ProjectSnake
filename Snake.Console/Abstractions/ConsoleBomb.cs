@@ -4,38 +4,39 @@ using Snake.Library.Interfaces;
 
 namespace Snake.Console.Abstractions;
 
-public class ConsoleBomb // : IBomb
+public class ConsoleBomb //: IBomb
 {
 	#region CONSTS
 	
-	private const char EMPTY_SYMBOL = ' ';
-	private const char BOMB_SYMBOL = '█';
 	private static readonly char[] BombExplosionCenterSymbols = new char[]{ '█', '▓', '▒', ' '};
 	private static readonly char[] BombExplosionSymbols = new char[]{ ' ', '█', '▓', '▒'};
 	private const int BLINK_TIME = 250;
 	private const int ANIMATION_DELAY = 300;
+	
 	#endregion
 
-	public event Action? OnExplode;
+	public event Action? OnExplosion;
+	public event Action<bool>? OnToggleBlink;
 
 	public Coord Coord { get; }
 
 	public int DetonationTime { get; }
+	public int BlinkTime { get; } = BLINK_TIME;
+	public bool IsBlinkOn { get; }
+
+	private int _timeRemaining = 0;
 
 	private readonly Coord[] _explosionCoords;
-	private readonly IRenderer _renderer;
-	private int _timeRemaining = 0;
-	private bool _blinkOn;
 
-	public ConsoleBomb(Coord coord, IRenderer renderer, int detonationTime = 10000) 
+	public ConsoleBomb(Coord coord, int detonationTime = 10000) 
 	{
-		_renderer = renderer;
 		Coord = coord;
 		DetonationTime = detonationTime;
 		_timeRemaining = DetonationTime;
 		_explosionCoords = new[] { Coord + Coord.Up, Coord + Coord.Down, Coord + Coord.Left, Coord + Coord.Right };
 	}
 
+	/*
 	public async Task Activate()
 	{
 		await StartTimer();
@@ -54,9 +55,9 @@ public class ConsoleBomb // : IBomb
 	private async Task Blinking(int delay)
 	{
 		_timeRemaining -= BLINK_TIME;
-		_renderer.Render(Coord, $"{BOMB_SYMBOL}", _blinkOn ? ColorType.BombOff : ColorType.BombOn);
+		_renderer.Render(this); //Coord, $"{BOMB_SYMBOL}", _blinkOn ? ColorType.DarkYellow : ColorType.Yellow);
 		await Task.Delay(delay);
-		_blinkOn = !_blinkOn;
+		IsBlinkOn = !IsBlinkOn;
 	}
 
 	private async Task Explosion()
@@ -64,12 +65,13 @@ public class ConsoleBomb // : IBomb
 		for (var i = 0; i < BombExplosionSymbols.Length; i++)
 		{
 			foreach (var coord in _explosionCoords)
-				_renderer.Render(coord, $"{BombExplosionSymbols[i]}", ColorType.BombOff);
-			_renderer.Render(Coord, $"{BombExplosionCenterSymbols[i]}", ColorType.BombOn);
+				_renderer.Render(this); //coord, $"{BombExplosionSymbols[i]}", ColorType.DarkYellow);
+			_renderer.Render(this); //Coord, $"{BombExplosionCenterSymbols[i]}", ColorType.Yellow);
 			await Task.Delay(ANIMATION_DELAY);
 		}
 		foreach (var coord in _explosionCoords)
-			_renderer.Render(coord, $"{EMPTY_SYMBOL}", ColorType.BombOff);
-		_renderer.Render(Coord, $"{EMPTY_SYMBOL}", ColorType.BombOff);
+			_renderer.Render(this); //coord, $"{EMPTY_SYMBOL}", ColorType.DarkYellow);
+		_renderer.Render(this); //Coord, $"{EMPTY_SYMBOL}", ColorType.DarkYellow);
 	}
+	*/
 }
