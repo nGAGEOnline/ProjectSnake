@@ -46,13 +46,14 @@ public class ConsoleRenderer : IRenderer
 
 	#endregion
 
-	public ConsoleRenderer()
-	{
-		CursorVisible = false;
-	}
+	private Board _board;
+	
+	public ConsoleRenderer() 
+		=> CursorVisible = false;
 
 	public void Render(Board board)
 	{
+		_board = board;
 		System.Console.Clear();
 		for (var y = 1; y < board.Height + 3; y++)
 			for (var x = 2; x < board.Width + 4; x++)
@@ -61,42 +62,47 @@ public class ConsoleRenderer : IRenderer
 					Print(new Coord(x - 3, y - 2), WALL_SYMBOL, WALL_DARK_COLOR);
 	}
 
-	public void Render(ISnake snake)
+	public async Task Render(ISnake snake, bool gameOver)
 	{
-		for (var i = 0; i < 2; i++)
-			Print(snake.Coords.ElementAt(i), i == 0 ? SNAKE_HEAD_SYMBOL : SNAKE_SYMBOL, SNAKE_COLOR);
+		var count = gameOver ? snake.Coords.Reverse().Count() : 2;
+		for (var i = 0; i < count; i++)
+		{
+			Print(snake.Coords.ElementAt(i), i == 0 ? SNAKE_HEAD_SYMBOL : SNAKE_SYMBOL, gameOver ? FRUIT_COLOR : SNAKE_COLOR);
+			if (gameOver)
+				await Task.Delay(40);
+		}
 	}
 
-	public void Render(IFruit fruit)
-		=> Print(fruit.Coord, FRUIT_SYMBOL, FRUIT_COLOR);
+	public void Render(IFruit? fruit)
+	{
+		if (fruit != null)
+			Print(fruit.Coord, FRUIT_SYMBOL, FRUIT_COLOR);
+	}
 
 	public void Render(IBomb bomb)
 		=> Print(bomb.Coord, BOMB_SYMBOL, bomb.IsBlinkOn ? BOMB_ON_COLOR : BOMB_OFF_COLOR);
 
-	public void RenderExplosion(IBomb bomb)
-	{
-		Explosion(bomb);
-	}
+	public void RenderExplosion(IBomb bomb) 
+		=> Explosion(bomb);
+
 	private async Task Explosion(IBomb bomb)
 	{
-		var explosionCoords = new[]
-		{
-			bomb.Coord + Coord.Up,
-			bomb.Coord + Coord.Down,
-			bomb.Coord + Coord.Left,
-			bomb.Coord + Coord.Right
-		};
-
+		var explosionCoord = bomb.ExplosionCoords
+			.Where(c => c.X >= 0 && c.X <= _board.Width && c.Y >= 0 && c.Y <= _board.Height)
+			.ToArray();
+		
 		for (var i = 0; i < BombExplosionSymbols.Length; i++)
 		{
-			foreach (var coord in explosionCoords)
-				Render(coord, BombExplosionSymbols[i], BOMB_OFF_COLOR);
 			Render(bomb.Coord, BombExplosionCenterSymbols[i], BOMB_ON_COLOR);
+			foreach (var coord in explosionCoord)
+				Render(coord, BombExplosionSymbols[i], BOMB_OFF_COLOR);
+
 			await Task.Delay(ANIMATION_DELAY);
 		}
-		foreach (var coord in explosionCoords)
-			Render(coord, EMPTY_SYMBOL, BOMB_OFF_COLOR);
+		
 		Render(bomb.Coord, EMPTY_SYMBOL, BOMB_ON_COLOR);
+		foreach (var coord in explosionCoord)
+			Render(coord, EMPTY_SYMBOL, BOMB_OFF_COLOR);
 	}
 	public void Render(ITextPrinter textPrinter)
 		=> Print(textPrinter.Coord, $" {textPrinter.TextField.Text} ", 

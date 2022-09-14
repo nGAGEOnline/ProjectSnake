@@ -8,8 +8,8 @@ Console.SetWindowSize(width + 4,height + 4);
 Console.SetBufferSize(width + 4, height + 4);
 Console.Title = "SnakeGame (Console)";
 
-Console.ReadKey();
+// Console.ReadKey();
 
-var settings = new Settings(width, height, Difficulty.Insane, 5, true);
+var settings = new Settings(width, height, Difficulty.Insane, false, 15, false, true);
 var game = new ConsoleGame(settings);
 await game.Run();

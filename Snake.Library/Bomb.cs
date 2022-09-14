@@ -2,14 +2,16 @@
 
 namespace Snake.Library;
 
-public class Bomb : IBomb
+public sealed class Bomb : IBomb
 {
 	private const int BLINK_TIME = 250;
+	private readonly Coord[] _explosionCoords;
 
 	public Coord Coord { get; }
 	public int DetonationTime { get; }
 	public bool IsBlinkOn { get; private set; }
-	
+	public IEnumerable<Coord> ExplosionCoords => _explosionCoords;
+
 	public event Action<IBomb> OnToggleBlink;
 	public event Action<IBomb> OnExplosion;
 
@@ -26,11 +28,13 @@ public class Bomb : IBomb
 		OnExplosion += _renderer.RenderExplosion;
 		DetonationTime = detonationTime;
 		Coord = coord;
+		_explosionCoords = new[] { Coord + Coord.Up, Coord + Coord.Down, Coord + Coord.Left, Coord + Coord.Right };
 		Activate();
 	}
 	~Bomb()
 	{
 		OnToggleBlink -= _renderer.Render;
+		OnExplosion -= _renderer.RenderExplosion;
 	}
 
 	public async Task Activate()

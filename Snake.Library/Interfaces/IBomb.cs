@@ -6,7 +6,8 @@ public interface IBomb
 	
 	int DetonationTime { get; }
 	bool IsBlinkOn { get; }
-
+	IEnumerable<Coord> ExplosionCoords { get; }
+	
 	event Action<IBomb> OnToggleBlink;
 	event Action<IBomb> OnExplosion;
 	

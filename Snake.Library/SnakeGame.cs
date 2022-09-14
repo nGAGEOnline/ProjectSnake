@@ -4,12 +4,13 @@ using Snake.Library.Interfaces;
 
 namespace Snake.Library;
 
-public class SnakeGame
+public sealed class SnakeGame
 {
 	public static readonly Random Rng = new ();
 	
-	public static bool CanDie { get; private set; }
+	public static bool WallKills { get; private set; }
 	public static bool CanWrap { get; private set; }
+	public static bool CanEatBomb { get; private set; }
 
 	private Board _board;
 	private ISnake _snake;
@@ -22,6 +23,7 @@ public class SnakeGame
 	private readonly TextPrinter _titleText;
 
 	private int _score = 0;
+	private int _fruitsCollected = 0;
 	private bool _gameOver;
 
 	public SnakeGame(IInput input, IRenderer renderer, Settings settings)
@@ -30,24 +32,28 @@ public class SnakeGame
 		_renderer = renderer;
 		_settings = settings;
 		_board = new Board(_settings.Width, _settings.Height);
-		_snake = new Snake(_board);
+		_snake = new Snake(_board, _settings.StartingLength);
 		
 		_titleText = new TextPrinter(_board, new TextField("SnakeGame by nGAGEOnline", ColorType.Green, ColorType.Black), -2);
 		_scoreText = new TextPrinter(_board, new TextField($"Score: {_score}", ColorType.DarkGrey, ColorType.Black), _settings.Height);
 
 		_snake.RemoveTail += OnRemoveTail;
 		_snake.EatFruit += OnEatFruit;
+		_snake.EatBomb += OnEatBomb;
 		_snake.Die += OnDie;
+		_board.OnExplosion += _snake.CheckForDamage;
 
-		// Beginner & Easy difficulty allows player to not die when hitting the walls, colliding with the snake still kills the player
-		CanDie = _settings.Difficulty != Difficulty.Beginner && _settings.Difficulty != Difficulty.Easy;
+		WallKills = _settings.WallKills;
 		CanWrap = _settings.CanWrap;
+		CanEatBomb = _settings.CanEatBomb;
 	}
 	~SnakeGame()
 	{
 		_snake.RemoveTail -= OnRemoveTail;
 		_snake.EatFruit -= OnEatFruit;
+		_snake.EatBomb -= OnEatBomb;
 		_snake.Die -= OnDie;
+		_board.OnExplosion -= _snake.CheckForDamage;
 	}
 	
 	public void Reset()
@@ -55,6 +61,7 @@ public class SnakeGame
 		_board = new Board(_settings.Width, _settings.Height);
 		_snake = new Snake(_board);
 		_input.Reset();
+		_fruitsCollected = 0;
 		_score = 0;
 	}
 	public async Task GameLoop()
@@ -76,23 +83,34 @@ public class SnakeGame
 	{
 		_input.Listen();
 		_snake.Move(_input.Direction);
-		_renderer.Render(_snake);
+		await _renderer.Render(_snake, _gameOver);
 		
 		await Task.Delay(_input.Direction is Direction.Left or Direction.Right ? delay : (int)(delay * 1.6f));
 	}
 
 	private async Task BombSpawner()
 	{
+		var bombSpawningDelay = 15000;
 		while (!_gameOver)
 		{
-			await Task.Delay(10000);
+			await Task.Delay(bombSpawningDelay);
+			if (_gameOver)
+				return;
+			
 			_board.SpawnBomb(_renderer);
-			await Task.Delay(10000);
+
+			bombSpawningDelay -= 1500;
+			bombSpawningDelay = Math.Clamp(bombSpawningDelay, 3000, 15000);
 		}
 	}
 	private void OnRemoveTail(Coord coord) 
 		=> _renderer.Clear(coord);
 
+	private void OnEatBomb()
+	{
+		if (_board.Bomb != null)
+			_board.ClearBombFromGrid(_board.Bomb);
+	}
 	private void OnEatFruit()
 	{
 		IncreaseScoreByDifficulty();
@@ -101,17 +119,18 @@ public class SnakeGame
 		AddNewFruit();
 	}
 
-	private void OnDie()
+	private async Task OnDie()
 	{
 		// TODO: Add player-death animation?
+		await _renderer.Render(_snake, _gameOver);
 		_gameOver = true;
 		
 		// TODO: Move render-code to a Display/Screen class
 		var text = new TextPrinter[]
 		{
-			new TextPrinter(_board, new TextField("!!! THE SNAKE DIED !!!", ColorType.White, ColorType.DarkRed), _settings.Height / 2 - 2),
-			new TextPrinter(_board, new TextField($"TOTAL SCORE: {_score}", ColorType.DarkCyan, ColorType.Black), _settings.Height / 2),
-			new TextPrinter(_board, new TextField("Press SPACE To Restart or ESC to Exit", ColorType.Cyan, ColorType.Black), _settings.Height / 2 + 2),
+			new(_board, new TextField("!!! THE SNAKE DIED !!!", ColorType.White, ColorType.DarkRed), _settings.Height / 2 - 2),
+			new(_board, new TextField($"TOTAL SCORE: {_score}", ColorType.DarkCyan, ColorType.Black), _settings.Height / 2),
+			new(_board, new TextField("Press SPACE To Restart or ESC to Exit", ColorType.Cyan, ColorType.Black), _settings.Height / 2 + 2),
 		};
 		foreach (var line in text)
 			line.Render(_renderer);
@@ -123,6 +142,13 @@ public class SnakeGame
 		_renderer.Render(_board.Fruit);
 	}
 
-	private void IncreaseScoreByDifficulty() 
-		=> _score += _settings.GetPointsByDifficulty();
+	private void IncreaseScoreByDifficulty()
+	{
+		var points = _settings.GetPointsByDifficulty();
+		if (_settings.DynamicDifficulty)
+			points *= 2;
+
+		_score += points;
+		_fruitsCollected++;
+	}
 }

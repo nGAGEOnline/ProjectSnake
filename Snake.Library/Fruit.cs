@@ -2,7 +2,7 @@
 
 namespace Snake.Library;
 
-public class Fruit : IFruit
+public sealed class Fruit : IFruit
 {
 	public Coord Coord { get; }
 

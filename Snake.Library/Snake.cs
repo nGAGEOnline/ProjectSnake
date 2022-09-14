@@ -3,12 +3,13 @@ using Snake.Library.Interfaces;
 
 namespace Snake.Library;
 
-public class Snake : ISnake
+public sealed class Snake : ISnake
 {
 	public IEnumerable<Coord> Coords => _coords;
 
+	public event Action? EatBomb;
 	public event Action? EatFruit;
-	public event Action? Die;
+	public event Func<Task>? Die;
 	public event Action<Coord>? RemoveTail;
 
 	public Coord Head => _coords.ElementAt(0);
@@ -58,14 +59,20 @@ public class Snake : ISnake
 		switch (NextGridValue(nextCoord))
 		{
 			case GridValue.Border:
-				if (SnakeGame.CanDie)
+				if (SnakeGame.WallKills)
 					Die?.Invoke();
 				break;
 			case GridValue.Snake:
 				Die?.Invoke();
 				break;
 			case GridValue.Bomb:
-				// TODO: Decide if snake should eat bomb, or die
+				if (SnakeGame.CanEatBomb)
+				{
+					Add(nextCoord);
+					EatBomb?.Invoke();
+				}
+				else
+					Die?.Invoke();
 				break;
 			case GridValue.Fruit:
 				Add(nextCoord);
@@ -76,6 +83,13 @@ public class Snake : ISnake
 				Remove();
 				break;
 		}
+	}
+
+	public void CheckForDamage(IBomb bomb)
+	{
+		foreach (var coord in bomb.ExplosionCoords.Where(c => !IsOutsideGrid(c)))
+			if (_coords.Contains(coord))
+				Die?.Invoke();
 	}
 
 	private void Add(Coord coord)

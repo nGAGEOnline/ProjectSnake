@@ -7,5 +7,5 @@ public enum Difficulty
 	Normal,
 	Hard,
 	Insane,
-	Nightmare
+	Nightmare,
 }
