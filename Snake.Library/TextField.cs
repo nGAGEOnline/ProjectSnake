@@ -1,18 +1,19 @@
 ﻿using Snake.Library.Enums;
 using Snake.Library.Interfaces;
 
-namespace Snake.Library;
-
-public class TextField : ITextField
+namespace Snake.Library
 {
-	public string Text { get; set; }
-	public ColorType ForegroundColor { get; }
-	public ColorType BackgroundColor { get; }
-	
-	public TextField(string text, ColorType foregroundColor, ColorType backgroundColor)
+	public class TextField : ITextField
 	{
-		Text = text;
-		ForegroundColor = foregroundColor;
-		BackgroundColor = backgroundColor;
+		public string Text { get; set; }
+		public ColorType ForegroundColor { get; }
+		public ColorType BackgroundColor { get; }
+
+		public TextField(string text, ColorType foregroundColor, ColorType backgroundColor)
+		{
+			Text = text;
+			ForegroundColor = foregroundColor;
+			BackgroundColor = backgroundColor;
+		}
 	}
 }

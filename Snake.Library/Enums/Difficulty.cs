@@ -1,11 +1,12 @@
-﻿namespace Snake.Library.Enums;
-
-public enum Difficulty
+﻿namespace Snake.Library.Enums
 {
-	Beginner,
-	Easy,
-	Normal,
-	Hard,
-	Insane,
-	Nightmare,
+	public enum Difficulty
+	{
+		Beginner,
+		Easy,
+		Normal,
+		Hard,
+		Insane,
+		Nightmare,
+	}
 }

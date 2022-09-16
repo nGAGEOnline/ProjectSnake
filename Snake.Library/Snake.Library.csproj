@@ -3,7 +3,17 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
+
+<!--    <Target Name="PostBuild" AfterTargets="PostBuildEvent">-->
+<!--        <Message Text="Executing CopyDLLs task" Importance="High" />-->
+
+<!--        <Copy -->
+<!--                SourceFiles="$(TargetDir)$(ProjectName).dll;$(TargetDir)$(ProjectName).pdb" -->
+<!--                DestinationFolder="D:\UnityProjects\Project Snake\Assets\nGAGEOnline\Plugins\" />-->
+
+<!--        <Message Text="Copied build files" Importance="High" />-->
+<!--    </Target>-->
 
 </Project>

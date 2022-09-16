@@ -1,10 +1,11 @@
-﻿namespace Snake.Library.Enums;
-
-public enum Direction
+﻿namespace Snake.Library.Enums
 {
-	None,
-	Up,
-	Down,
-	Left,
-	Right
+	public enum Direction
+	{
+		None,
+		Up,
+		Down,
+		Left,
+		Right
+	}
 }

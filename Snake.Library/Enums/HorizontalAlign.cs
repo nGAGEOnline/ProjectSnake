@@ -1,8 +1,9 @@
-﻿namespace Snake.Library.Enums;
-
-public enum HorizontalAlign
+﻿namespace Snake.Library.Enums
 {
-	Center,
-	Left,
-	Right
+	public enum HorizontalAlign
+	{
+		Center,
+		Left,
+		Right
+	}
 }

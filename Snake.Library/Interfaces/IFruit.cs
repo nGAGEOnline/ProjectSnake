@@ -1,10 +1,9 @@
-﻿using Snake.Library.Enums;
-
-namespace Snake.Library.Interfaces;
-
-public interface IFruit
+﻿namespace Snake.Library.Interfaces
 {
-	Coord Coord { get; }
-	
-	void Render(IRenderer renderer);
+	public interface IFruit
+	{
+		Coord Coord { get; }
+
+		void Render(IRenderer renderer);
+	}
 }

@@ -1,11 +1,12 @@
 ﻿using Snake.Library.Enums;
 
-namespace Snake.Library.Interfaces;
-
-public interface ITextField
+namespace Snake.Library.Interfaces
 {
-	string Text { get; set; }
+	public interface ITextField
+	{
+		string Text { get; set; }
 
-	ColorType ForegroundColor { get; }
-	ColorType BackgroundColor { get; }
+		ColorType ForegroundColor { get; }
+		ColorType BackgroundColor { get; }
+	}
 }

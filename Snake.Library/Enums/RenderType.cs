@@ -1,11 +1,12 @@
-﻿namespace Snake.Library.Enums;
-
-public enum RenderType
+﻿namespace Snake.Library.Enums
 {
-	SnakeHead,
-	SnakeBody,
-	Fruit,
-	Bomb,
-	Border,
-	Empty
+	public enum RenderType
+	{
+		SnakeHead,
+		SnakeBody,
+		Fruit,
+		Bomb,
+		Border,
+		Empty
+	}
 }

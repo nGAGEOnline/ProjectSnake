@@ -1,10 +1,11 @@
-﻿namespace Snake.Library.Enums;
-
-public enum GridValue
+﻿namespace Snake.Library.Enums
 {
-	Empty,
-	Snake,
-	Fruit,
-	Bomb,
-	Border
+	public enum GridValue
+	{
+		Empty,
+		Snake,
+		Fruit,
+		Bomb,
+		Border
+	}
 }

@@ -1,14 +1,16 @@
-﻿using Snake.Library.Interfaces;
+﻿using Snake.Library;
+using Snake.Library.Interfaces;
 
-namespace Snake.Library;
-
-public sealed class Fruit : IFruit
+namespace Snake.Library
 {
-	public Coord Coord { get; }
+	public sealed class Fruit : IFruit
+	{
+		public Coord Coord { get; }
 
-	public Fruit(Coord coord) 
-		=> Coord = coord;
+		public Fruit(Coord coord) 
+			=> Coord = coord;
 
-	public void Render(IRenderer renderer) 
-		=> renderer.Render(this);
+		public void Render(IRenderer renderer) 
+			=> renderer.Render(this);
+	}
 }

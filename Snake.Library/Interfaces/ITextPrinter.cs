@@ -1,9 +1,10 @@
-﻿namespace Snake.Library.Interfaces;
-
-public interface ITextPrinter
+﻿namespace Snake.Library.Interfaces
 {
-	Coord Coord { get; }
-	ITextField TextField { get; }
-	
-	void Render(IRenderer renderer);
+	public interface ITextPrinter
+	{
+		Coord Coord { get; }
+		ITextField TextField { get; }
+
+		void Render(IRenderer renderer);
+	}
 }
