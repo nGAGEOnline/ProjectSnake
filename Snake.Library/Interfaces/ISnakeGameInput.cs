@@ -2,9 +2,8 @@
 
 namespace Snake.Library.Interfaces
 {
-	public interface IInput
+	public interface ISnakeGameInput
 	{
-		int BufferSize { get; }
 		Direction Direction { get; }
 		void Listen();
 		void Reset();

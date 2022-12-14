@@ -1,11 +1,13 @@
 ﻿namespace Snake.Library.Enums
 {
-	public enum GridValue
+	public enum ObjectType
 	{
 		Empty,
+		Grid,
 		Snake,
 		Fruit,
 		Bomb,
-		Border
+		Border,
+		Text
 	}
 }

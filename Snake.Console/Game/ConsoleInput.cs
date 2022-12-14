@@ -1,19 +1,19 @@
 ﻿using Snake.Library.Enums;
 using Snake.Library.Helpers;
 using Snake.Library.Interfaces;
-using static System.Console;
 
-namespace Snake.Console.Abstractions;
+namespace Snake.Console.Game;
 
-public class ConsoleInput : IInput
+public class ConsoleInput : ISnakeGameInput
 {
-	public int BufferSize { get; }
 	public Direction Direction { get; private set; } = Direction.Right;
+	
+	private readonly int _bufferSize;
 
 	private readonly Queue<Direction> _directionChanges = new();
 
 	public ConsoleInput(int bufferSize = 2) 
-		=> BufferSize = bufferSize;
+		=> _bufferSize = bufferSize;
 
 	public void Listen()
 	{
@@ -29,10 +29,10 @@ public class ConsoleInput : IInput
 
 	private Direction GetDirectionFromInput()
 	{
-		if (!KeyAvailable)
+		if (!System.Console.KeyAvailable)
 			return Direction;
 				
-		return ReadKey(true).Key switch
+		return System.Console.ReadKey(true).Key switch
 		{
 			ConsoleKey.W or ConsoleKey.UpArrow => Direction.Up,
 			ConsoleKey.S or ConsoleKey.DownArrow => Direction.Down,
@@ -51,7 +51,7 @@ public class ConsoleInput : IInput
 
 	private bool CanChangeDirection(Direction newDirection)
 	{
-		if (_directionChanges.Count == BufferSize)
+		if (_directionChanges.Count == _bufferSize || newDirection == Direction || _directionChanges.Contains(newDirection))
 			return false;
 
 		var lastDirection = GetLastDirection();

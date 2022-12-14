@@ -1,16 +1,11 @@
-﻿using Snake.Library;
+using Snake.Library.Enums;
 using Snake.Library.Interfaces;
+using Snake.Library.Structs;
 
-namespace Snake.Library
+namespace Snake.Library;
+
+internal sealed class Fruit : IGridObject
 {
-	public sealed class Fruit : IFruit
-	{
-		public Coord Coord { get; }
-
-		public Fruit(Coord coord) 
-			=> Coord = coord;
-
-		public void Render(IRenderer renderer) 
-			=> renderer.Render(this);
-	}
+	public Coord[] Coords { get; set; }
+	public ObjectType ObjectType { get; set; }
 }

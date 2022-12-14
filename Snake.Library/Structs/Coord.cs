@@ -1,15 +1,17 @@
-﻿namespace Snake.Library
+﻿using System.Numerics;
+
+namespace Snake.Library.Structs
 {
 	public readonly struct Coord
 	{
 		#region STATICS
 
-		public static Coord Zero => new(0, 0);
-		public static Coord Up => new(0, -1);
-		public static Coord Down => new(0, 1);
-		public static Coord Left => new(-1, 0);
-		public static Coord Right => new(1, 0);
-		public static Coord One => new(1, 1);
+		internal static Coord Zero => new Coord(0, 0);
+		internal static Coord Up => new Coord(0, -1);
+		internal static Coord Down => new Coord(0, 1);
+		internal static Coord Left => new Coord(-1, 0);
+		internal static Coord Right => new Coord(1, 0);
+		internal static Coord One => new Coord(1, 1);
 
 		#endregion
 
@@ -42,9 +44,17 @@
 			=> !Equals(left, right);
 
 		public static Coord operator -(Coord left, Coord right)
-			=> new(left.X - right.X, left.Y - right.Y);
+			=> new Coord(left.X - right.X, left.Y - right.Y);
 
 		public static Coord operator +(Coord left, Coord right)
-			=> new(left.X + right.X, left.Y + right.Y);
+			=> new Coord(left.X + right.X, left.Y + right.Y);
+
+		public static implicit operator Vector2(Coord coord) 
+			=> new Vector2(coord.X, coord.Y);
+		public static implicit operator Coord(Vector2 vector) 
+			=> new Coord((int)vector.X, (int)vector.Y);
+
+		public override string ToString() 
+			=> $"[{X}, {Y}]";
 	}
 }
