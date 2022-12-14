@@ -4,7 +4,7 @@ using Snake.Library.Interfaces;
 
 namespace Snake.Console.Game;
 
-public class ConsoleInput : ISnakeGameInput
+public class ConsoleInputProvider : IInputProvider
 {
 	public Direction Direction { get; private set; } = Direction.Right;
 	
@@ -12,7 +12,7 @@ public class ConsoleInput : ISnakeGameInput
 
 	private readonly Queue<Direction> _directionChanges = new();
 
-	public ConsoleInput(int bufferSize = 2) 
+	public ConsoleInputProvider(int bufferSize = 2) 
 		=> _bufferSize = bufferSize;
 
 	public void Listen()

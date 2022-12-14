@@ -7,7 +7,7 @@ using Snake.Library.Structs;
 
 namespace Snake.Console.Game;
 
-public class ConsoleRenderer : ISnakeGameRenderer
+public class ConsoleRenderer : IGameRenderer
 {
 	public Coord Offset => new Coord(OFFSET_X, OFFSET_Y);
 	private const int OFFSET_X = 3;

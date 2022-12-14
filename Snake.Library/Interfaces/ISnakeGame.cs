@@ -3,8 +3,8 @@ namespace Snake.Library.Interfaces
 	public interface ISnakeGame
 	{
 		SnakeGame Game { get; }
-		ISnakeGameInput Input { get; }
-		ISnakeGameRenderer Renderer { get; }
+		IInputProvider InputProvider { get; }
+		IGameRenderer Renderer { get; }
 
 		event Action<int>? OnScoreChanged;
 		

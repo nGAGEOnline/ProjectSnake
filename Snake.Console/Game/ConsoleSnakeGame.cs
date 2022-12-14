@@ -5,14 +5,15 @@ using Snake.Library.Enums;
 using Snake.Library.Interfaces;
 using Snake.Library.Interfaces.UI;
 using Snake.Library.Structs;
+using static System.Console;
 
 namespace Snake.Console.Game;
 
 public class ConsoleSnakeGame : ISnakeGame
 {
 	public SnakeGame Game { get; private set; }
-	public ISnakeGameInput Input { get; private set; }
-	public ISnakeGameRenderer Renderer { get; private set; }
+	public IInputProvider InputProvider { get; private set; }
+	public IGameRenderer Renderer { get; private set; }
 
 	private ITextField? CoordText { get; set; }
 	private ITextField? TitleText { get; set; }
@@ -33,17 +34,16 @@ public class ConsoleSnakeGame : ISnakeGame
 	{
 		_settings = settings;
 
-		System.Console.Title = SnakeGame.TITLE;
+		Title = SnakeGame.TITLE;
 		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 		{
-			System.Console.SetWindowSize(settings.Width + 4, settings.Height + 5);
-			System.Console.SetBufferSize(settings.Width + 4, settings.Height + 5);
+			SetWindowSize(settings.Width + 4, settings.Height + 5);
+			SetBufferSize(settings.Width + 4, settings.Height + 5);
 		}
-
-		Input = new ConsoleInput();
+		InputProvider = new ConsoleInputProvider();
 		Renderer = new ConsoleRenderer(_settings);
 
-		Game = new SnakeGame(_settings, Renderer, Input);
+		Game = new SnakeGame(_settings, Renderer, InputProvider);
 		Game.OnLengthChanged += UpdateSnakeLength;
 		Game.OnScoreChanged += (score) => OnScoreChanged?.Invoke(score);
 		Game.OnScoreChanged += UpdateScore;
@@ -67,10 +67,10 @@ public class ConsoleSnakeGame : ISnakeGame
 
 	private void SetupTextFields()
 	{
-		const string scoreText = $"Score:";
-		const string movesText = $"Steps:";
-		const string lengthText = $"Length:";
-		const string directionPrefixText = $"Direction:";
+		const string scoreText = "Score:";
+		const string movesText = "Steps:";
+		const string lengthText = "Length:";
+		const string directionPrefixText = "Direction:";
 		var difficultyText = $"Difficulty: {_settings.Difficulty.ToString()}";
 		var directionText = $"{difficultyText} {DifficultyText}";
 		
@@ -80,7 +80,7 @@ public class ConsoleSnakeGame : ISnakeGame
 		LengthText = new TextField(new Coord(0, -2), lengthText, Game.Snake.Length.ToString(), ObjectType.Text);
 		MovesCountText = new TextField(new Coord(0, _settings.Height + 1), movesText, "0", ObjectType.Text);
 		DifficultyText = new TextField(new Coord(_settings.Width - (difficultyText.Length + 1) - 2, _settings.Height), difficultyText, ObjectType.Text);
-		MoveDirectionText = new TextField(new Coord(_settings.Width - directionText.Length, _settings.Height + 1), directionPrefixText, $"{Input.Direction}", ObjectType.Text);
+		MoveDirectionText = new TextField(new Coord(_settings.Width - directionText.Length, _settings.Height + 1), directionPrefixText, $"{InputProvider.Direction}", ObjectType.Text);
 		
 		Renderer.Render(ScoreText, TextStyle.Score);
 		Renderer.Render(TitleText, TextStyle.Title);
@@ -89,24 +89,23 @@ public class ConsoleSnakeGame : ISnakeGame
 		Renderer.Render(DifficultyText, TextStyle.Difficulty);
 	}
 
+	public async Task PlayAsync(int refreshDelay)
+	{
+		while (!Game.GameOver)
+		{
+			await Task.Run(() => InputProvider.Listen());
+			await Task.Run(() => Game.Move());
+			await Task.Delay(GetDirectionAdjustedDelay(refreshDelay));
+		}
+	}
 
 	public void Play(int refreshDelay)
 	{
 		while (!Game.GameOver)
 		{
-			Input.Listen();
+			InputProvider.Listen();
 			Game.Move();
 			Thread.Sleep(GetDirectionAdjustedDelay(refreshDelay));
-		}
-	}
-
-	public async Task PlayAsync(int refreshDelay)
-	{
-		while (!Game.GameOver)
-		{
-			await Task.Run(() => Input.Listen());
-			await Task.Run(() => Game.Move());
-			await Task.Delay(GetDirectionAdjustedDelay(refreshDelay));
 		}
 	}
 
@@ -122,8 +121,8 @@ public class ConsoleSnakeGame : ISnakeGame
 	{
 		if (MoveDirectionText is null)
 			return;
-		var text = $"{Input.Direction} ";
-		if (Input.Direction == Direction.Up)
+		var text = $"{InputProvider.Direction} ";
+		if (InputProvider.Direction == Direction.Up)
 			text += "  ";
 		MoveDirectionText.UpdateText($"{text}");
 		Renderer.Render(MoveDirectionText, TextStyle.Moves);
@@ -158,10 +157,10 @@ public class ConsoleSnakeGame : ISnakeGame
 	}
 
 	public void Reset() 
-		=> Game = new SnakeGame(_settings, Renderer, Input);
+		=> Game = new SnakeGame(_settings, Renderer, InputProvider);
 
 	private int GetDirectionAdjustedDelay(int baseDelay) 
-		=> Input.Direction is Direction.Up or Direction.Down 
+		=> InputProvider.Direction is Direction.Up or Direction.Down 
 			? (int)(baseDelay * _settings.VerticalSpeedAdjustment) 
 			: baseDelay;
 }

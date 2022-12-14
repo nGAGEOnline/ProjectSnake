@@ -4,7 +4,7 @@ using Snake.Library.Structs;
 
 namespace Snake.Library.Interfaces
 {
-	public interface ISnakeGameRenderer
+	public interface IGameRenderer
 	{
 		Coord Offset { get; }
 		

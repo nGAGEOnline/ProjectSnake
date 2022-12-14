@@ -6,9 +6,7 @@ namespace Snake.Console;
 
 public static class GameLauncher
 {
-	private const bool USE_ASYNC = true;
-
-	public static async Task Start()
+	public static async Task Start(bool useAsync = true)
 	{
 		var settings = new SnakeSettings(80, 25, Difficulty.Hard);
 		var game = new ConsoleSnakeGame(settings);
@@ -16,12 +14,10 @@ public static class GameLauncher
 
 		// =================================================
 
-		var refreshDelay = (int)(settings.GetDelayByDifficulty() * 0.5f);
-		if (USE_ASYNC)
+		var refreshDelay = settings.GetDelayByDifficulty();
+		if (useAsync)
 			await game.PlayAsync(refreshDelay);
 		else
 			game.Play(refreshDelay);
-
-		System.Console.ReadKey();
 	}
 }

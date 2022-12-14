@@ -21,14 +21,14 @@ namespace Snake.Library
 		private int _collectedFruits = 0;
 
 		private readonly SnakeSettings _settings;
-		private readonly ISnakeGameRenderer _renderer;
-		private readonly ISnakeGameInput _input;
+		private readonly IGameRenderer _renderer;
+		private readonly IInputProvider _inputProvider;
 
-		public SnakeGame(SnakeSettings settings, ISnakeGameRenderer renderer, ISnakeGameInput input)
+		public SnakeGame(SnakeSettings settings, IGameRenderer renderer, IInputProvider inputProvider)
 		{
 			_settings = settings;
 			_renderer = renderer;
-			_input = input;
+			_inputProvider = inputProvider;
 			
 			Grid = new Grid(settings);
 			Grid.OnGridValueChanged += _renderer.Render;
@@ -50,7 +50,7 @@ namespace Snake.Library
 		public void DrawGrid() => _renderer.RenderGrid();
 		public void SpawnFruit() => Grid.SpawnFruit();
 
-		public void Move() => Snake.Move(_input.Direction);
+		public void Move() => Snake.Move(_inputProvider.Direction);
 		private void Die() => GameOver = true;
 		private void Eat()
 		{

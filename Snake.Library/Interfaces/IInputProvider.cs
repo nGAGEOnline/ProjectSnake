@@ -2,7 +2,7 @@
 
 namespace Snake.Library.Interfaces
 {
-	public interface ISnakeGameInput
+	public interface IInputProvider
 	{
 		Direction Direction { get; }
 		void Listen();
