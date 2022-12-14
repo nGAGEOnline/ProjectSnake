@@ -13,7 +13,7 @@ namespace Snake.Library
 		public Difficulty Difficulty;
 
 		public bool WallKills => Difficulty != Difficulty.Beginner && Difficulty != Difficulty.Easy;
-		public float VerticalSpeedAdjustment { get; set; } = 1.85f;
+		public float VerticalSpeedAdjustment { get; set; } = 1.75f;
 		public bool CanWrap = true;
 
 		public SnakeSettings(int width, int height, Difficulty difficulty = Difficulty.Insane)
@@ -40,13 +40,13 @@ namespace Snake.Library
 		public int GetDelayByDifficulty()
 			=> Difficulty switch
 			{
-				Difficulty.Beginner => 250,
-				Difficulty.Easy => 190,
-				Difficulty.Normal => 140,
-				Difficulty.Hard => 100,
-				Difficulty.Insane => 70,
-				Difficulty.Nightmare => 50,
-				_ => 300
+				Difficulty.Beginner => 150,
+				Difficulty.Easy => 125,
+				Difficulty.Normal => 100,
+				Difficulty.Hard => 80,
+				Difficulty.Insane => 60,
+				Difficulty.Nightmare => 40,
+				_ => 200
 			};
 	}
 }
